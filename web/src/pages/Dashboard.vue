@@ -24,7 +24,7 @@
         <div class="col-sm-8">
           <span class="block-subtitle-text">Overview of Latest Month</span>
         </div>
-        <div class="col-sm-4">
+        <!-- <div class="col-sm-4">
           <q-select
             v-model="selectedMonth"
             filled
@@ -35,7 +35,7 @@
             options-dense
             label="Month"
           />
-        </div>
+        </div> -->
         <div class="col-sm-12">
           <span class="block-title-text" style="font-size: 2rem;">
             <template v-if="loadingMonthly">
