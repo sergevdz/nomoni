@@ -1,0 +1,8 @@
+composer.lock
+/vendor/
+/.phalcon/
+
+# PHPStorm
+/.idea/
+
+config.ini
