@@ -45,7 +45,7 @@ class Auth
                 if (password_verify($password, $user->password) || $user->password_token === $password) {
                     $user->password_token = null;
 
-                    if ($user->update() !== false) {
+                    if ($user->update()) {
                         return intval($user->id);
                     } else {
                         var_dump(Helpers::getErrors($user));
@@ -90,7 +90,7 @@ class Auth
         return $jwt;
     }
 
-    public static function getUserData (Phalcon\Config $config)
+    public static function getUserData (Phalcon\Config $config): object
     {
         $headers = getallheaders();
         if(!isset($headers["Authorization"]) || empty($headers["Authorization"])) {
@@ -101,34 +101,4 @@ class Auth
         $decoded_token = JWT::decode($jwt[1], $secretKey, array('HS512'));
         return $decoded_token->data;
     }
-
-    // public static function getUserRol (int $userId): string
-    // {
-    //     $userRol = '';
-    //     if ($userId > 0) {
-    //         $grants = SysGrants::find(['user_id = ' . $userId]);
-    //         if ($grants->count()) {
-    //             foreach ($grants as $g) {
-    //                 $rol = SysRoles::findFirst($g->role_id);
-    //                 if ($rol !== false) {
-    //                     $userRol = $rol->name;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     return $userRol;
-    // }
-
-    //aux obtener token descifrado
-    // public static function getTokenData (Phalcon\Config $config)
-    // {
-    //     $headers = getallheaders();
-    //     if(!isset($headers["Authorization"]) || empty($headers["Authorization"])) {
-    //         return null;
-    //     }
-    //     $secretKey = base64_decode($config->jwtkey);
-    //     $jwt = explode(" ", $headers["Authorization"]);
-    //     $decoded_token = JWT::decode($jwt[1], $secretKey, array('HS512'));
-    //     return $decoded_token;
-    // }
 }

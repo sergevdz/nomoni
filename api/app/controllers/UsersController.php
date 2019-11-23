@@ -17,10 +17,10 @@ class UsersController extends Controller
             if ($user) {
                 unset($user['password'], $user['password_token']);
                 
-                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/public/assets/uploads/profile/';
+                $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/public/assets/uploads/profile/';
                 
-                if (!file_exists($upload_dir . $user['image_url'])) {
-                    $user['image_url'] = 'default-user.png';
+                if (!file_exists($uploadDir . $user['photo'])) {
+                    $user['photo'] = 'default-user.png';
                 }
 
                 $this->content['user'] = $user;
