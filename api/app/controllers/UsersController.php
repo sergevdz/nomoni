@@ -64,7 +64,7 @@ class UsersController extends BaseController
             );
 
             if ($user) {
-                $this->content['message'] = Message::warning('El email ya se encuentra en uso.');
+                $this->content['message'] = Message::warning('Entered email is already in use.');
                 $tx->rollback();   
             }
 
@@ -77,11 +77,11 @@ class UsersController extends BaseController
 
             if ($user->create()) {
                 $this->content['result'] = true;
-                $this->content['message'] = Message::success('Se creó el usuario.');
+                $this->content['message'] = Message::success('User was created.');
                 $tx->commit();
             } else {
                 $errorMsg = Helpers::getErrorMessage($client);
-                $this->content['message'] = Message::error($errorMsg ?? 'No se pudo crear el usuario.');
+                $this->content['message'] = Message::error($errorMsg ?? 'User could not be created.');
                 $tx->rollback();
             }
         } catch (Exception $e) {
