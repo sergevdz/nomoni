@@ -2,9 +2,8 @@
 
 use Phalcon\Mvc\Controller;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
-    public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
 
     public function login ()
     {

@@ -23,6 +23,29 @@ class Helpers
 	}
 
     /**
+     * Obtiene los errores en el modelo si falla al hacer save(), create(), update() o delete()
+     *
+     * @param Phalcon\Mvc\Model $model
+     * @return mixed
+     */
+    public static function getErrorMessage ($model)
+    {
+        $resp = null;
+        $errors = [];
+        foreach ($model->getMessages() as $message) {
+            foreach ((array) $message as $k => $v) {
+                $errors[explode('_', $k . '')[1]] = $v;
+            }
+            break;
+        }
+
+        if ($errors['type'] === 'ConstraintViolation') {
+            $resp = $errors['message'];
+        }
+        return $resp;
+    }
+
+    /**
      * Round a number at given position
      * @example ceiling(4.643, 0.05): 4.65
      * @example ceiling(4.643, 1): 5

@@ -21,7 +21,8 @@ class CORSMiddleware implements MiddlewareInterface
      * @return bool
      */
     public function beforeHandleRoute(Event $event, Micro $application) {
-        $application->response
+        $application
+            ->response
             ->setHeader('Access-Control-Allow-Origin', '*')
             ->setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
             ->setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Range, Content-Disposition, Content-Type, Authorization')
@@ -32,6 +33,10 @@ class CORSMiddleware implements MiddlewareInterface
             }
 
             if ($application->request->getURI() === '/auth/login') {
+                return true;
+            }
+
+            if ($application->request->getURI() === '/auth/signup') {
                 return true;
             }
             

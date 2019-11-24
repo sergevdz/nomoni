@@ -2,25 +2,27 @@
 
 use Phalcon\Mvc\Controller;
 
-class UsersController extends Controller
+class UsersController extends BaseController
 {
-    public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
-
+    /**
+     * Get profile data
+     *
+     */
     public function profile ()
     {
         $validUser = Auth::getUserData($this->config);
         $this->content['user'] = null;
         
         if ($validUser !== null) {
-            $user = Users::findFirst($validUser->id)->toArray();
+            $user = Users::findFirst($validUser->id);
             
             if ($user) {
-                unset($user['password'], $user['password_token']);
+                unset($user->password, $user->password_token);
                 
                 $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/public/assets/uploads/profile/';
                 
-                if (!file_exists($uploadDir . $user['photo'])) {
-                    $user['photo'] = 'default-user.png';
+                if (!file_exists($uploadDir . $user->photo)) {
+                    $user->photo = 'default-user.png';
                 }
 
                 $this->content['user'] = $user;
@@ -28,6 +30,62 @@ class UsersController extends Controller
             }
         } else {
             $this->content['message'] = Message::warning("User doesn't exists.");
+        }
+
+        $this->response->setJsonContent($this->content);
+    }
+
+    /**
+     * User Sign Up
+     *
+     */
+    public function signup () {
+        try {
+            $request = $this->request->getPost();
+            $tx = $this->transactions->get();
+
+            if ($request['password'] !== $request['password']) {
+                $this->content['message'] = Message::warning('.');
+                $tx->rollback();
+            }
+
+            if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
+                $this->content['message'] = Message::warning("Entered passwords doesn't match");
+                $tx->rollback();
+            }
+
+            $user = Users::findFirst(
+                [
+                    'email = :email:',
+                    'bind' => [
+                        'email' => $email
+                    ]
+                ]
+            );
+
+            if ($user) {
+                $this->content['message'] = Message::warning('El email ya se encuentra en uso.');
+                $tx->rollback();   
+            }
+
+            $user = new Users();
+            $user->setTransaction($tx);
+            $user->first_name = $request['first_name'];
+            $user->last_name = $request['last_name'];
+            $user->email = $request['email'];
+            $user->password = $request['password'];
+
+            if ($user->create()) {
+                $this->content['result'] = true;
+                $this->content['message'] = Message::success('Se creó el usuario.');
+                $tx->commit();
+            } else {
+                $errorMsg = Helpers::getErrorMessage($client);
+                $this->content['message'] = Message::error($errorMsg ?? 'No se pudo crear el usuario.');
+                $tx->rollback();
+            }
+        } catch (Exception $e) {
+            $this->content['errors'] = Message::exception($e);
         }
 
         $this->response->setJsonContent($this->content);

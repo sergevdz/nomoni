@@ -18,7 +18,8 @@ class Auth
             $decodedToken = JWT::decode($jwt[1], $secretKey, array('HS512'));
 
             if (isset($decodedToken)) {
-                if ($decodedToken->data->id > -1 && $decodedToken->data->id !== null) {
+
+                if (intval($decodedToken->data->id) > -1) {
                     return true;
                 }
             }
@@ -90,15 +91,15 @@ class Auth
         return $jwt;
     }
 
-    public static function getUserData (Phalcon\Config $config): object
+    public static function getUserData (Phalcon\Config $config)
     {
         $headers = getallheaders();
-        if(!isset($headers["Authorization"]) || empty($headers["Authorization"])) {
+        if(!isset($headers['Authorization']) || empty($headers['Authorization'])) {
             return null;
         }
         $secretKey = base64_decode($config->jwtkey);
-        $jwt = explode(" ", $headers["Authorization"]);
-        $decoded_token = JWT::decode($jwt[1], $secretKey, array('HS512'));
-        return $decoded_token->data;
+        $jwt = explode(' ', $headers['Authorization']);
+        $decodedToken = JWT::decode($jwt[1], $secretKey, array('HS512'));
+        return $decodedToken->data;
     }
 }

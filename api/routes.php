@@ -6,6 +6,7 @@
 
 $auth = new ControllerCollection(new AuthController(), '/auth');
 $auth->post('/login', 'login');
+$auth->post('/signup', 'signup');
 $app->mount($auth);
 
 $users = new ControllerCollection(new UsersController(), '/users');
