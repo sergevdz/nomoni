@@ -43,7 +43,9 @@ class CORSMiddleware implements MiddlewareInterface
             $isValid = Auth::validateRequest($application->request, $application->config->jwtkey);
 
             if (!$isValid) {
-                $application->response->setStatusCode(401, 'Unauthorized')
+                $application
+                    ->response
+                    ->setStatusCode(401, 'Unauthorized')
                     ->setJsonContent('Access is not authorized.')
                     ->send();
                 return false;

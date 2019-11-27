@@ -3,23 +3,17 @@
     <q-page-container style="background-color: #f5f5f5;">
       <q-page>
         <div class="row justify-center">
-          <h2>NTV Account Login</h2>
+          <h2>Nomoni</h2>
         </div>
         <div class="row justify-center">
           <div class="col-sm-4 q-pa-md">
-            <div class="row q-mb-sm">
-              <div class="col-sm-1 offset-11 pull-right">
-                <q-btn color="primary" label="New" style="visibility: hidden;" />
-              </div>
-            </div>
 
-            <div class="row q-col-gutter-xs">
+            <div class="row q-pa-sm bg-white shadow-1">
               <div class="col-sm-12">
-                <q-input v-model="email" filled label="Email" v-on:keyup.enter="logIn()" />
+                <q-input v-model="email" label="Email" stack-label @keyup.enter="logIn()" />
               </div>
               <div class="col-sm-12">
-                <!-- <q-input v-model="password" filled label="Password" /> -->
-                <q-input v-model="password" filled label="Password" :type="isPwd ? 'password' : 'text'" v-on:keyup.enter="logIn()">
+                <q-input v-model="password" label="Password" stack-label :type="isPwd ? 'password' : 'text'" @keyup.enter="logIn()">
                   <template v-slot:append>
                     <q-icon
                     :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -30,7 +24,10 @@
                 </q-input>
               </div>
               <div class="col-sm-12 q-mt-sm pull-right">
-                <q-btn color="primary" label="Log In" :loading="loading" @click="logIn()" />
+                <q-btn color="green" label="Sign Up" :loading="loading" @click="goToSignUp()" class="full-width" />
+              </div>
+              <div class="col-sm-12 q-mt-sm pull-right">
+                <q-btn color="primary" label="Log In" :loading="loading" @click="logIn()" class="full-width" />
               </div>
             </div>
           </div>
@@ -55,7 +52,7 @@ export default {
   },
   // computed: {},
   // beforeCreate () {},
-  created () {
+  mounted () {
     const JWT = localStorage.getItem('JWT')
     if (JWT !== null && JWT !== '') {
       this.$axios.defaults.headers.common['Authorization'] = `Bearer ${JWT}`
@@ -65,7 +62,7 @@ export default {
         if (userWasLoaded) {
           this.$router.push('/dashboard')
         } else {
-          // Se queda en LOGIN
+          // It stays in LOGIN
         }
       }).catch(error => {
         localStorage.removeItem('JWT')
@@ -73,10 +70,9 @@ export default {
         console.error(error)
       })
     } else {
-      // Se queda en LOGIN
+      // It stays in LOGIN
     }
   },
-  // mounted () {},
   methods: {
     logIn () {
       let params = {
@@ -108,6 +104,9 @@ export default {
         this.loading = false
         console.error(error)
       })
+    },
+    goToSignUp () {
+      this.$router.push('/signup')
     },
     nope () {
       // NOPE
