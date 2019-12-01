@@ -42,10 +42,8 @@
             <div class="col-sm-3">
               <q-input
                 v-model="spend.fields.date"
-                :error="$v.spend.fields.date.$error"
                 type="date"
                 filled
-                :rules="dateRules"
                 :loading="spend.fieldsLoading"
               />
             </div>
@@ -130,7 +128,6 @@ export default {
     spend: {
       fields: {
         amount: { required, decimal, between: between(0, 99999.99) },
-        date: { required },
         concept: { required, maxLength: maxLength(60) },
         description: { maxLength: maxLength(60) },
         type_id: { required },
@@ -166,11 +163,6 @@ export default {
       return [
         val => (this.$v.spend.fields.amount.required) || 'Amount field is required',
         val => (this.$v.spend.fields.amount.between) || 'Amount must be a value between 0 and 99999.99'
-      ]
-    },
-    dateRules (val) {
-      return [
-        val => (this.$v.spend.fields.date.required) || 'Date field is required'
       ]
     },
     conceptRules (val) {

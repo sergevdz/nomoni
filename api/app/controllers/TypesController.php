@@ -2,26 +2,25 @@
 
 use Phalcon\Mvc\Controller;
 
-class TypesController extends Controller
+class TypesController extends BaseController
 {
-    public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
 
     public function getTypes ()
     {   
-        $this->content['types'] = Types::find(['order' => 'ord ASC']);
+        $this->content['types'] = Types::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
     
     public function getType ($id)
     {
-        $this->content['type'] = Types::findFirst($id);
+        $this->content['type'] = Types::findFirst("user_id = {$this->loggedUserId} AND id = {$id}");
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
 
     public function getOptions () {
-        $sql = "SELECT id, name, icon FROM types ORDER BY id ASC;";
+        $sql = "SELECT id, name, icon FROM types WHERE user_id = {$this->loggedUserId} ORDER BY id ASC;";
         $types = $this->db->query($sql)->fetchAll();
         
         $options = [];
@@ -46,11 +45,12 @@ class TypesController extends Controller
 
             $type = new Types();
             $type->setTransaction($tx);
+            $type->user_id = $this->loggedUserId;
             $type->name = $request['name'];
             $type->icon = $request['icon'];
             $type->ord = $request['ord'];
 
-            if ($type->create() !== false) {
+            if ($type->create()) {
                 $this->content['result'] = true;
                 $this->content['message'] = Message::success('Type was created.');
                 $tx->commit();
@@ -77,11 +77,12 @@ class TypesController extends Controller
 
             if ($type) {
                 $type->setTransaction($tx);
+                $type->user_id = $this->loggedUserId;
                 $type->name = $request['name'];
             	$type->icon = $request['icon'];
             	$type->ord = $request['ord'];
 
-            	if ($type->update() !== false) {
+            	if ($type->update()) {
             		$this->content['result'] = true;
             		$this->content['message'] = Message::success('Type has changed.');
                     $tx->commit();
@@ -108,7 +109,7 @@ class TypesController extends Controller
             if ($type) {
                 $type->setTransaction($tx);
 
-                if ($type->delete() !== false) {
+                if ($type->delete()) {
                     $this->content['result'] = true;
                     $this->content['message'] = Message::success('Type was deleted.');
                     $tx->commit();

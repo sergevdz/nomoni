@@ -4,11 +4,16 @@ use Phalcon\Mvc\Controller;
 
 class SpendsController extends BaseController
 {
-    public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
 
     public function getSpends ()
     {   
-        $this->content['spends'] = Spends::find(['order' => 'id DESC', 'limit' => '20000']);
+        $this->content['spends'] = Spends::find(
+            [
+                'user_id = ' . $this->loggedUserId,
+                'order' => 'id DESC', 
+                'limit' => '20000'
+            ]
+        );
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
@@ -57,9 +62,9 @@ class SpendsController extends BaseController
         JOIN types ON types.id = spends.type_id
         JOIN payment_methods ON payment_methods.id = spends.payment_method_id
         JOIN categories ON categories.id = spends.category_id
-        WHERE spends.id > 0 {$where}
+        WHERE spends.user_id = {$this->loggedUserId} AND spends.id > 0 {$where}
         ORDER BY spends.{$sortBy} {$descending} limit {$rowsPerPage} offset {$offset};";
-        $this->content['sql'] = $sql;
+
         $spends = $this->db->query($sql)->fetchAll();
         
         $this->content['spends'] = $spends;
@@ -75,7 +80,7 @@ class SpendsController extends BaseController
 
         for ($i = 1; $i <= 5; $i++) {
             $spends = $this->db->query(
-                "SELECT sum(amount) as amount FROM spends where to_char(date, 'YYYY-MM') = '$currentDate';"
+                "SELECT sum(amount) as amount FROM spends where user_id = $this->loggedUserId AND to_char(date, 'YYYY-MM') = '$currentDate';"
             )->fetchAll();
             $months[] = ['label' => $currentDate, 'value' => floatval($spends[0]['amount'])];
             $currentDate = date("Y-m", strtotime("-1 month", strtotime($currentDate)));
@@ -86,7 +91,7 @@ class SpendsController extends BaseController
     
     public function getSpend ($id)
     {
-        $spend = Spends::findFirst($id);
+        $spend = Spends::findFirst("user_id = {$this->loggedUserId} AND id = {$id}");
         
         $this->content['message'] = Message::warning("Spend doesn't exists.");
 
@@ -107,8 +112,15 @@ class SpendsController extends BaseController
 
             $spend = new Spends();
             $spend->setTransaction($tx);
+            $spend->user_id = $this->loggedUserId;
             $spend->amount = $request['amount'];
-            $spend->date = $request['date'];
+
+            $spend->date = date('Y-m-d H:i:s');
+
+            if ($request['date'] !== null && !empty($request['date'])) {
+                $spend->date = $request['date'];
+            }
+
             $spend->concept = $request['concept'];
             $spend->description = $request['description'];
             $spend->type_id = $request['type_id'];
@@ -142,8 +154,15 @@ class SpendsController extends BaseController
 
             if ($spend) {
                 $spend->setTransaction($tx);
+                $spend->user_id = $this->loggedUserId;
                 $spend->amount = $request['amount'];
-	            $spend->date = $request['date'];
+
+                $spend->date = date('Y-m-d H:i:s');
+
+                if ($request['date'] !== null && !empty($request['date'])) {
+                    $spend->date = $request['date'];
+                }
+
 	            $spend->concept = $request['concept'];
 	            $spend->description = $request['description'];
 	            $spend->type_id = $request['type_id'];
@@ -177,7 +196,7 @@ class SpendsController extends BaseController
             if ($spend) {
                 $spend->setTransaction($tx);
 
-                if ($spend->delete() !== false) {
+                if ($spend->delete()) {
                     $this->content['result'] = true;
                     $this->content['message'] = Message::success('Spend was deleted.');
                     $tx->commit();
@@ -198,7 +217,7 @@ class SpendsController extends BaseController
 
     public function getDailyExpenses () {
         $today = date('Y-m-d');
-        $sql = "SELECT amount FROM spends where to_char(date, 'YYYY-MM-DD') = '$today';";
+        $sql = "SELECT amount FROM spends where user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM-DD') = '$today';";
         $spends = $this->db->query($sql)->fetchAll();
         $dailyAmount = 0;
         
@@ -216,7 +235,7 @@ class SpendsController extends BaseController
 
     public function getMonthlyExpenses () {
         $today = date('Y-m');
-        $sql = "SELECT amount FROM spends where to_char(date, 'YYYY-MM') = '$today';";
+        $sql = "SELECT amount FROM spends where user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '$today';";
         $spends = $this->db->query($sql)->fetchAll();
         $dailyAmount = 0;
         
@@ -243,7 +262,7 @@ class SpendsController extends BaseController
             categories.name,
             categories.ord from spends 
         JOIN categories ON categories.id = spends.category_id
-        WHERE to_char(date, 'YYYY-MM') = '$today'
+        WHERE user_id = {$this->loggedUserId} to_char(date, 'YYYY-MM') = '{$today}'
         GROUP BY spends.category_id, categories.name, categories.ord
         ORDER BY categories.ord;";
         $spends = $this->db->query($sql)->fetchAll();
@@ -263,7 +282,7 @@ class SpendsController extends BaseController
             types.name,
             types.ord from spends 
         JOIN types ON types.id = spends.type_id
-        WHERE to_char(date, 'YYYY-MM') = '$today'
+        WHERE user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '{$today}'
         GROUP BY spends.type_id, types.name, types.ord
         ORDER BY types.ord;";
         $spends = $this->db->query($sql)->fetchAll();
@@ -283,7 +302,7 @@ class SpendsController extends BaseController
             payment_methods.name,
             payment_methods.ord from spends 
         JOIN payment_methods ON payment_methods.id = spends.payment_method_id
-        WHERE to_char(date, 'YYYY-MM') = '$today'
+        WHERE user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '{$today}'
         GROUP BY spends.payment_method_id, payment_methods.name, payment_methods.ord
         ORDER BY payment_methods.ord;";
         $spends = $this->db->query($sql)->fetchAll();

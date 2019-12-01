@@ -2,26 +2,25 @@
 
 use Phalcon\Mvc\Controller;
 
-class CategoriesController extends Controller
+class CategoriesController extends BaseController
 {
-    public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
 
     public function getCategories ()
     {   
-        $this->content['categories'] = Categories::find(['order' => 'ord ASC']);
+        $this->content['categories'] = Categories::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
     
     public function getCategory ($id)
     {
-        $this->content['category'] = Categories::findFirst($id);
+        $this->content['category'] = Categories::findFirst("user = {$this->loggedUserId} AND id = {$id}");
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
 
     public function getOptions () {
-        $sql = "SELECT id, name FROM categories ORDER BY id ASC;";
+        $sql = "SELECT id, name FROM categories WHERE user_id = {$this->loggedUserId} ORDER BY id ASC;";
         $types = $this->db->query($sql)->fetchAll();
         
         $options = [];
@@ -45,11 +44,12 @@ class CategoriesController extends Controller
 
             $category = new Categories();
             $category->setTransaction($tx);
+            $category->user_id = $this->loggedUserId;
             $category->name = $request['name'];
             $category->icon = $request['icon'];
             $category->ord = $request['ord'];
 
-            if ($category->create() !== false) {
+            if ($category->create()) {
                 $this->content['result'] = true;
                 $this->content['message'] = Message::success('Category was created.');
                 $tx->commit();
@@ -76,11 +76,12 @@ class CategoriesController extends Controller
 
             if ($category) {
                 $category->setTransaction($tx);
+                $category->user_id = $this->loggedUserId;
                 $category->name = $request['name'];
             	$category->icon = $request['icon'];
             	$category->ord = $request['ord'];
 
-            	if ($category->update() !== false) {
+            	if ($category->update()) {
             		$this->content['result'] = true;
             		$this->content['message'] = Message::success('Category has changed.');
                     $tx->commit();

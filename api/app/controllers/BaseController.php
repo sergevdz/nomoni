@@ -1,6 +1,7 @@
 <?php 
 
 use Phalcon\Mvc\Controller;
+date_default_timezone_set('America/Mexico_City');
 
 class BaseController extends Controller
 {

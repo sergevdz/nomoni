@@ -2,26 +2,25 @@
 
 use Phalcon\Mvc\Controller;
 
-class PaymentMethodsController extends Controller
+class PaymentMethodsController extends BaseController
 {
-    public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
 
     public function getPaymentMethods ()
     {   
-        $this->content['paymentMethods'] = PaymentMethods::find(['order' => 'ord ASC']);
+        $this->content['paymentMethods'] = PaymentMethods::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
     
     public function getPaymentMethod ($id)
     {
-        $this->content['paymentMethod'] = PaymentMethods::findFirst($id);
+        $this->content['paymentMethod'] = PaymentMethods::findFirst("user_id = {$this->loggedUserId} AND id = $id");
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
 
     public function getOptions () {
-        $sql = "SELECT id, name FROM payment_methods ORDER BY id ASC;";
+        $sql = "SELECT id, name FROM payment_methods WHERE user_id = {$this->loggedUserId} ORDER BY id ASC;";
         $types = $this->db->query($sql)->fetchAll();
         
         $options = [];
@@ -45,11 +44,12 @@ class PaymentMethodsController extends Controller
 
             $paymentMethod = new PaymentMethods();
             $paymentMethod->setTransaction($tx);
+            $paymentMethod->user_id = $this->loggedUserId;
             $paymentMethod->name = $request['name'];
             $paymentMethod->icon = $request['icon'];
             $paymentMethod->ord = $request['ord'];
 
-            if ($paymentMethod->create() !== false) {
+            if ($paymentMethod->create()) {
                 $this->content['result'] = true;
                 $this->content['message'] = Message::success('Payment method was created.');
                 $tx->commit();
@@ -76,11 +76,12 @@ class PaymentMethodsController extends Controller
 
             if ($paymentMethod) {
                 $paymentMethod->setTransaction($tx);
+                $paymentMethod->user_id = $this->loggedUserId;
                 $paymentMethod->name = $request['name'];
                 $paymentMethod->icon = $request['icon'];
                 $paymentMethod->ord = $request['ord'];
 
-                if ($paymentMethod->update() !== false) {
+                if ($paymentMethod->update()) {
                     $this->content['result'] = true;
                     $this->content['message'] = Message::success('Payment method has changed.');
                     $tx->commit();
@@ -107,7 +108,7 @@ class PaymentMethodsController extends Controller
             if ($paymentMethod) {
                 $paymentMethod->setTransaction($tx);
 
-                if ($paymentMethod->delete() !== false) {
+                if ($paymentMethod->delete()) {
                     $this->content['result'] = true;
                     $this->content['message'] = Message::success('Payment method was deleted.');
                     $tx->commit();
