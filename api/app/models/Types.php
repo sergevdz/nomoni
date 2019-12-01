@@ -2,14 +2,14 @@
 
 use Phalcon\Mvc\Model;
 
-class Types extends Model
+class Types extends BaseModel
 {
 
     public function initialize ()
     {
-        $this->setSource('types');
+        $this->loadSource('types');
 
-        $this->belongsTo('created_by', 'Users', 'id');
+        $this->belongsTo('user_id', 'Users', 'id');
 
         $this->hasMany(
             'id',

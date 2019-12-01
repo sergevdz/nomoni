@@ -2,14 +2,14 @@
 
 use Phalcon\Mvc\Model;
 
-class PaymentMethods extends Model
+class PaymentMethods extends BaseModel
 {
 
     public function initialize ()
     {
-        $this->setSource('payment_methods');
+        $this->loadSource('payment_methods');
 
-        $this->belongsTo('created_by', 'Users', 'id');
+        $this->belongsTo('user_id', 'Users', 'id');
 
         $this->hasMany(
             'id',

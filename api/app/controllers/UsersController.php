@@ -10,11 +10,10 @@ class UsersController extends BaseController
      */
     public function profile ()
     {
-        $validUser = Auth::getUserData($this->config);
         $this->content['user'] = null;
         
-        if ($validUser !== null) {
-            $user = Users::findFirst($validUser->id);
+        if (intval($this->loggedUserId) > 0) {
+            $user = Users::findFirst($this->loggedUserId);
             
             if ($user) {
                 unset($user->password, $user->password_token);

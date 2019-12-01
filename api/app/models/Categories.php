@@ -2,14 +2,14 @@
 
 use Phalcon\Mvc\Model;
 
-class Categories extends Model
+class Categories extends BaseModel
 {
 
     public function initialize ()
     {
-        $this->setSource('categories');
+        $this->loadSource('categories');
 
-        $this->belongsTo('created_by', 'Users', 'id');
+        $this->belongsTo('user_id', 'Users', 'id');
 
         $this->hasMany(
             'id',

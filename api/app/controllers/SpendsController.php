@@ -2,7 +2,7 @@
 
 use Phalcon\Mvc\Controller;
 
-class SpendsController extends Controller
+class SpendsController extends BaseController
 {
     public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
 
