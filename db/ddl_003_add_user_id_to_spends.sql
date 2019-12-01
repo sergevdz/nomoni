@@ -4,12 +4,6 @@ alter table spends add foreign key (user_id) references users (id);
 update spends set user_id = 1;
 alter table spends alter column user_id set not null;
 
--- types
-alter table types add column user_id bigint;
-alter table types add foreign key (user_id) references users (id);
-update types set user_id = 1;
-alter table types alter column user_id set not null;
-
 -- categories
 alter table categories add column user_id bigint;
 alter table categories add foreign key (user_id) references users (id);
@@ -22,5 +16,6 @@ alter table payment_methods add foreign key (user_id) references users (id);
 update payment_methods set user_id = 1;
 alter table payment_methods alter column user_id set not null;
 
-alter table types drop column user_id;
-
+alter table spends alter column type_id drop not null;
+alter table spends alter column payment_method_id drop not null;
+alter table spends  rename column description to note;

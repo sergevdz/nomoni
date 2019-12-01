@@ -59,8 +59,8 @@ class SpendsController extends BaseController
             payment_methods.name AS payment_method,
             categories.name AS category
         FROM spends
-        JOIN types ON types.id = spends.type_id
-        JOIN payment_methods ON payment_methods.id = spends.payment_method_id
+        LEFT JOIN types ON types.id = spends.type_id
+        LEFT JOIN payment_methods ON payment_methods.id = spends.payment_method_id
         JOIN categories ON categories.id = spends.category_id
         WHERE spends.user_id = {$this->loggedUserId} AND spends.id > 0 {$where}
         ORDER BY spends.{$sortBy} {$descending} limit {$rowsPerPage} offset {$offset};";
@@ -114,20 +114,26 @@ class SpendsController extends BaseController
             $spend->setTransaction($tx);
             $spend->user_id = $this->loggedUserId;
             $spend->amount = $request['amount'];
+            $spend->concept = $request['concept'];
+            $spend->category_id = $request['category_id'];
 
             $spend->date = date('Y-m-d H:i:s');
 
             if ($request['date'] !== null && !empty($request['date'])) {
-                $spend->date = $request['date'];
+                $spend->date = date('Y-m-d', strtotime($request['date'])) . ' ' . date('H:i:s');
             }
 
-            $spend->concept = $request['concept'];
-            $spend->description = $request['description'];
-            $spend->type_id = $request['type_id'];
-            $spend->category_id = $request['category_id'];
-            $spend->payment_method_id = $request['payment_method_id'];
+            if (intval($request['type_id']) > 0) {
+                $spend->type_id = $request['type_id'];
+            }
 
-            if ($spend->create() !== false) {
+            if (intval($request['payment_method_id']) > 0) {
+                $spend->payment_method_id = $request['payment_method_id'];
+            }
+
+            $spend->note = $request['note'];
+
+            if ($spend->create()) {
                 $this->content['result'] = true;
                 $this->content['message'] = Message::success('Spend was created.');
                 $tx->commit();
@@ -156,20 +162,26 @@ class SpendsController extends BaseController
                 $spend->setTransaction($tx);
                 $spend->user_id = $this->loggedUserId;
                 $spend->amount = $request['amount'];
+                $spend->concept = $request['concept'];
+                $spend->category_id = $request['category_id'];
 
                 $spend->date = date('Y-m-d H:i:s');
 
                 if ($request['date'] !== null && !empty($request['date'])) {
-                    $spend->date = $request['date'];
+                    $spend->date = date('Y-m-d H:i:s', strtotime($request['date']));
                 }
 
-	            $spend->concept = $request['concept'];
-	            $spend->description = $request['description'];
-	            $spend->type_id = $request['type_id'];
-	            $spend->category_id = $request['category_id'];
-	            $spend->payment_method_id = $request['payment_method_id'];
+                if (intval($request['type_id']) > 0) {
+                    $spend->type_id = $request['type_id'];
+                }
 
-            	if ($spend->update() !== false) {
+                if (intval($request['payment_method_id']) > 0) {
+                    $spend->payment_method_id = $request['payment_method_id'];
+                }
+
+                $spend->note = $request['note'];
+
+            	if ($spend->update()) {
             		$this->content['result'] = true;
             		$this->content['message'] = Message::success('Spend has changed.');
                     $tx->commit();
@@ -260,9 +272,10 @@ class SpendsController extends BaseController
         SELECT
             sum(amount) AS amount,
             categories.name,
-            categories.ord from spends 
+            categories.ord 
+        FROM spends 
         JOIN categories ON categories.id = spends.category_id
-        WHERE user_id = {$this->loggedUserId} to_char(date, 'YYYY-MM') = '{$today}'
+        WHERE categories.user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '{$today}'
         GROUP BY spends.category_id, categories.name, categories.ord
         ORDER BY categories.ord;";
         $spends = $this->db->query($sql)->fetchAll();
@@ -280,9 +293,10 @@ class SpendsController extends BaseController
         SELECT
             sum(amount) AS amount,
             types.name,
-            types.ord from spends 
+            types.ord
+        FROM spends 
         JOIN types ON types.id = spends.type_id
-        WHERE user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '{$today}'
+        WHERE to_char(date, 'YYYY-MM') = '{$today}'
         GROUP BY spends.type_id, types.name, types.ord
         ORDER BY types.ord;";
         $spends = $this->db->query($sql)->fetchAll();
@@ -300,9 +314,10 @@ class SpendsController extends BaseController
         SELECT
             sum(amount) AS amount,
             payment_methods.name,
-            payment_methods.ord from spends 
+            payment_methods.ord
+        FROM spends 
         JOIN payment_methods ON payment_methods.id = spends.payment_method_id
-        WHERE user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '{$today}'
+        WHERE payment_methods.user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '{$today}'
         GROUP BY spends.payment_method_id, payment_methods.name, payment_methods.ord
         ORDER BY payment_methods.ord;";
         $spends = $this->db->query($sql)->fetchAll();

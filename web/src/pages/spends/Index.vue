@@ -35,7 +35,6 @@
           <div class="row">
             <div class="col">
               <q-table
-                class="my-sticky-header-table"
                 :data="data"
                 :columns="columns"
                 row-key="id"
@@ -170,5 +169,5 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="stylus">
 </style>

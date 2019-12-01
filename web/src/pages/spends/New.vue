@@ -40,13 +40,6 @@
             </div>
             <div class="col-sm-3">
               <q-input
-                v-model="spend.fields.date"
-                type="date"
-                filled
-              />
-            </div>
-            <div class="col-sm-3">
-              <q-input
                 v-model="spend.fields.concept"
                 :error="$v.spend.fields.concept.$error"
                 label="Concept"
@@ -56,40 +49,6 @@
               />
             </div>
             <div class="col-sm-3">
-              <q-input
-                v-model="spend.fields.description"
-                :error="$v.spend.fields.description.$error"
-                label="Description"
-                filled
-                :rules="descriptionRules"
-                maxlength="100"
-              />
-            </div>
-            <div class="col-sm-4">
-              <q-select
-                v-model="spend.fields.type_id"
-                :error="$v.spend.fields.type_id.$error"
-                filled
-                emit-value
-                map-options
-                label="Type"
-                :options="spend.typesOptions"
-                :loading="spend.typesLoading"
-              />
-            </div>
-            <div class="col-sm-4">
-              <q-select
-                v-model="spend.fields.payment_method_id"
-                :error="$v.spend.fields.payment_method_id.$error"
-                filled
-                emit-value
-                map-options
-                label="Payment method"
-                :options="spend.paymentMethodsOptions"
-                :loading="spend.paymentMethodsLoading"
-              />
-            </div>
-            <div class="col-sm-4">
               <q-select
                 v-model="spend.fields.category_id"
                 :error="$v.spend.fields.category_id.$error"
@@ -99,6 +58,47 @@
                 label="Category"
                 :options="spend.categoriesOptions"
                 :loading="spend.categoriesLoading"
+              />
+            </div>
+            <div class="col-sm-3">
+              <q-input
+                v-model="spend.fields.date"
+                label="Date (Optional)"
+                stack-label
+                type="date"
+                filled
+              />
+            </div>
+            <div class="col-sm-3">
+              <q-select
+                v-model="spend.fields.type_id"
+                filled
+                emit-value
+                map-options
+                label="Type (Optional)"
+                :options="spend.typesOptions"
+                :loading="spend.typesLoading"
+              />
+            </div>
+            <div class="col-sm-3">
+              <q-select
+                v-model="spend.fields.payment_method_id"
+                filled
+                emit-value
+                map-options
+                label="Payment method (Optional)"
+                :options="spend.paymentMethodsOptions"
+                :loading="spend.paymentMethodsLoading"
+              />
+            </div>
+            <div class="col-sm-6">
+              <q-input
+                v-model="spend.fields.note"
+                :error="$v.spend.fields.note.$error"
+                label="Note (Optional)"
+                filled
+                :rules="noteRules"
+                maxlength="100"
               />
             </div>
           </div>
@@ -125,9 +125,7 @@ export default {
       fields: {
         amount: { required, decimal, between: between(0, 99999.99) },
         concept: { required, maxLength: maxLength(60) },
-        description: { maxLength: maxLength(100) },
-        type_id: { required },
-        payment_method_id: { required },
+        note: { maxLength: maxLength(100) },
         category_id: { required }
       }
     }
@@ -139,7 +137,7 @@ export default {
           amount: null,
           date: null,
           concept: null,
-          description: null,
+          note: null,
           type_id: null,
           payment_method_id: null,
           category_id: null
@@ -166,19 +164,9 @@ export default {
         val => (this.$v.spend.fields.concept.maxLength) || 'Concept length must be less than 60 characters'
       ]
     },
-    descriptionRules (val) {
+    noteRules (val) {
       return [
-        val => (this.$v.spend.fields.description.maxLength) || 'Description length must be less than 60 characters'
-      ]
-    },
-    typeIdRules (val) {
-      return [
-        val => (this.$v.spend.fields.type_id.required) || 'Type field is required'
-      ]
-    },
-    paymentMethodIdRules (val) {
-      return [
-        val => (this.$v.spend.fields.payment_method_id.required) || 'Payment method field is required'
+        val => (this.$v.spend.fields.note.maxLength) || 'Description length must be less than 60 characters'
       ]
     },
     categoryIdRules (val) {
