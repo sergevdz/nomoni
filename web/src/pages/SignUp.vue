@@ -34,7 +34,13 @@
                   :rules="emailRules" />
               </div>
               <div class="col-xs-12">
-                <q-input v-model="password" label="Password" stack-label :type="isPwd ? 'password' : 'text'">
+                <q-input
+                  v-model="password"
+                  label="Password"
+                  stack-label
+                  :error="$v.password.$error"
+                  :rules="passwordRules"
+                  :type="isPwd ? 'password' : 'text'">
                   <template v-slot:append>
                     <q-icon
                     :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -45,7 +51,13 @@
                 </q-input>
               </div>
               <div class="col-xs-12">
-                <q-input v-model="confirmPassword" label="Password" stack-label :type="isPwd ? 'password' : 'text'">
+                 <q-input
+                  v-model="confirmPassword"
+                  label="Confirm password"
+                  stack-label
+                  :error="$v.confirmPassword.$error"
+                  :rules="confirmPasswordRules"
+                  :type="isPwd ? 'password' : 'text'">
                   <template v-slot:append>
                     <q-icon
                     :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -78,7 +90,9 @@ export default {
   validations: {
     first_name: { required },
     last_name: { required },
-    email: { required, email }
+    email: { required, email },
+    password: { required },
+    confirmPassword: { required }
   },
   computed: {
     firstNameRules (val) {
@@ -95,6 +109,16 @@ export default {
       return [
         val => (this.$v.email.required) || 'Email is required.',
         val => (this.$v.email.email) || 'Please enter a valid email.'
+      ]
+    },
+    passwordRules (val) {
+      return [
+        val => (this.$v.password.required) || 'Password is required'
+      ]
+    },
+    confirmPasswordRules (val) {
+      return [
+        val => (this.$v.confirmPassword.required) || 'Confirm password is required'
       ]
     }
   },

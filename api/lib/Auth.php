@@ -41,7 +41,7 @@ class Auth
                 ]
             );
 
-            if ($user !== false) {
+            if ($user) {
 
                 if (password_verify($password, $user->password) || $user->password_token === $password) {
                     $user->password_token = null;

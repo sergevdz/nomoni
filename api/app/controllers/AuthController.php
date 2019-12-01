@@ -15,6 +15,7 @@ class AuthController extends BaseController
 
             if (isset($request['email']) && isset($request['password'])) {
                 $userId = Auth::getUserId($request['email'], $request['password']);
+                
                 if ($userId > -1) {
                     $data = ['id' => $userId];
                     $jwt = Auth::createToken($this->request->getHttpHost(), $data, $this->config->jwtkey);
@@ -50,7 +51,7 @@ class AuthController extends BaseController
             }
 
             if ($request['password'] !== $request['confirmPassword'] && $passwordIsNotEmpty) {
-                $this->content['message'] = Message::warning("Entered passwords doesn't match");
+                $this->content['message'] = Message::warning("The email address is already in use.");
                 $tx->rollback();
             }
 
@@ -79,12 +80,12 @@ class AuthController extends BaseController
             $user->first_name = $request['first_name'];
             $user->last_name = $request['last_name'];
             $user->email = $request['email'];
-            $user->password = $request['password'];
+            $user->password = password_hash($request['password'], PASSWORD_BCRYPT);
 
             if ($user->create()) {
                 $this->content['result'] = true;
                 $this->content['message'] = Message::success('User was created.');
-                // $tx->commit();
+                $tx->commit();
             } else {
                 $errorMsg = Helpers::getErrorMessage($user);
                 $this->content['message2'] = Helpers::getErrors($user);
