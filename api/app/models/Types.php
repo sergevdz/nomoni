@@ -9,8 +9,6 @@ class Types extends BaseModel
     {
         $this->loadSource('types');
 
-        $this->belongsTo('user_id', 'Users', 'id');
-
         $this->hasMany(
             'id',
             'Spends',

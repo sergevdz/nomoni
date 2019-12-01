@@ -22,17 +22,6 @@ class Users extends BaseModel
 
 	    $this->hasMany(
 	        'id',
-	        'Types',
-	        'user_id',
-	        [
-	            'foreignKey' => [
-	                'message' => 'There are types depending on this user.',
-	            ]
-	        ]
-	    );
-
-	    $this->hasMany(
-	        'id',
 	        'PaymentMethods',
 	        'user_id',
 	        [

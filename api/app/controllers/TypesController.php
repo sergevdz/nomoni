@@ -7,20 +7,20 @@ class TypesController extends BaseController
 
     public function getTypes ()
     {   
-        $this->content['types'] = Types::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
+        $this->content['types'] = Types::find(['order' => 'ord ASC']);
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
     
     public function getType ($id)
     {
-        $this->content['type'] = Types::findFirst("user_id = {$this->loggedUserId} AND id = {$id}");
+        $this->content['type'] = Types::findFirst($id);
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
     }
 
     public function getOptions () {
-        $sql = "SELECT id, name, icon FROM types WHERE user_id = {$this->loggedUserId} ORDER BY id ASC;";
+        $sql = "SELECT id, name, icon FROM types ORDER BY id ASC;";
         $types = $this->db->query($sql)->fetchAll();
         
         $options = [];
@@ -45,7 +45,6 @@ class TypesController extends BaseController
 
             $type = new Types();
             $type->setTransaction($tx);
-            $type->user_id = $this->loggedUserId;
             $type->name = $request['name'];
             $type->icon = $request['icon'];
             $type->ord = $request['ord'];
@@ -77,7 +76,6 @@ class TypesController extends BaseController
 
             if ($type) {
                 $type->setTransaction($tx);
-                $type->user_id = $this->loggedUserId;
                 $type->name = $request['name'];
             	$type->icon = $request['icon'];
             	$type->ord = $request['ord'];

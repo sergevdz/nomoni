@@ -22,3 +22,5 @@ alter table payment_methods add foreign key (user_id) references users (id);
 update payment_methods set user_id = 1;
 alter table payment_methods alter column user_id set not null;
 
+alter table types drop column user_id;
+
