@@ -138,6 +138,9 @@ export default {
   computed: {
     firstName () {
       return this.$store.getters['users/firstName']
+    },
+    roleId () {
+      return this.$store.getters['users/roleId']
     }
   },
   methods: {
