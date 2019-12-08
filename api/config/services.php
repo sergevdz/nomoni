@@ -56,14 +56,14 @@ $di->setShared('db', function () use ($config) {
 $di->setShared('modelsManager', function () use ($config) {
     $eventsManager = new EventsManager();
     
-    $validUser = Auth::getUserData($config);
+    $user = Auth::getTokenData($config);
     
     $eventsManager->attach(            
         'model:beforeValidationOnCreate',
-        function (Event $event, $model) use ($validUser) {
+        function (Event $event, $model) use ($user) {
 
-            if ($validUser !== null) {
-                $model->created_by = $validUser->id;
+            if ($user !== null) {
+                $model->created_by = $user->id;
             }
             return true;
         }
@@ -71,10 +71,10 @@ $di->setShared('modelsManager', function () use ($config) {
 
     $eventsManager->attach(
         'model:beforeUpdate',
-        function (Event $event, $model) use ($validUser) {
+        function (Event $event, $model) use ($user) {
 
-            if ($validUser !== null) {
-                $model->modified_by = $validUser->id;
+            if ($user !== null) {
+                $model->modified_by = $user->id;
                 $model->modified = date('Y-m-d H:i:s');
             }
             return true;

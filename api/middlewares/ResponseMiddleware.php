@@ -22,7 +22,6 @@ class ResponseMiddleware implements MiddlewareInterface
      */
     public function afterHandleRoute(Event $event, Micro $application) {
         if (!$application->response->isSent()) {
-            // $application->response->setContentType('application/json', 'UTF-8');
             $application->response->send();
         }
         return true;

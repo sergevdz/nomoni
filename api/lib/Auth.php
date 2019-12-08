@@ -5,28 +5,24 @@ use \Firebase\JWT\JWT;
 
 class Auth
 {
-    public static function validateRequest (Request $request, string $jwtKey): bool
+    public static function getTokenData (Phalcon\Config $config)
     {
+
         try {
             $headers = getallheaders();
 
-            if (!isset($headers['Authorization']) || empty($headers['Authorization'])) {
-                return false;
+            if(!isset($headers['Authorization']) || empty($headers['Authorization'])) {
+                return null;
             }
-            $secretKey = base64_decode($jwtKey);
-            $jwt = explode(" ", $headers['Authorization']);
-            $decodedToken = JWT::decode($jwt[1], $secretKey, array('HS512'));
 
-            if (isset($decodedToken)) {
+            $secretKey = base64_decode($config->jwtkey);
+            $jwt = explode(' ', $headers['Authorization']);
+            $decodedToken = JWT::decode($jwt[1], $secretKey, ['HS512']);
 
-                if (intval($decodedToken->data->id) > -1) {
-                    return true;
-                }
-            }
+            return $decodedToken->data ?? null;
         } catch (Exception $e) {
-            return false;
+            return null;
         }
-        return false;
     }
 
     public static function getUserId (string $email, string $password): int
@@ -89,17 +85,5 @@ class Auth
         );
 
         return $jwt;
-    }
-
-    public static function getUserData (Phalcon\Config $config)
-    {
-        $headers = getallheaders();
-        if(!isset($headers['Authorization']) || empty($headers['Authorization'])) {
-            return null;
-        }
-        $secretKey = base64_decode($config->jwtkey);
-        $jwt = explode(' ', $headers['Authorization']);
-        $decodedToken = JWT::decode($jwt[1], $secretKey, array('HS512'));
-        return $decodedToken->data;
     }
 }

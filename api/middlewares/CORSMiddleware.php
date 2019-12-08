@@ -28,28 +28,28 @@ class CORSMiddleware implements MiddlewareInterface
             ->setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Range, Content-Disposition, Content-Type, Authorization')
             ->setHeader('Access-Control-Allow-Credentials', 'true');
             
-            if ($application->request->isOptions()) {
-                return true;
-            }
+        if ($application->request->isOptions()) {
+            return true;
+        }
 
-            if ($application->request->getURI() === '/auth/login') {
-                return true;
-            }
+        if ($application->request->getURI() === '/auth/login') {
+            return true;
+        }
 
-            if ($application->request->getURI() === '/auth/signup') {
-                return true;
-            }
-            
-            $isValid = Auth::validateRequest($application->request, $application->config->jwtkey);
+        if ($application->request->getURI() === '/auth/signup') {
+            return true;
+        }
 
-            if (!$isValid) {
-                $application
-                    ->response
-                    ->setStatusCode(401, 'Unauthorized')
-                    ->setJsonContent('Access is not authorized.')
-                    ->send();
-                return false;
-            }
+        $user = Auth::getTokenData($application->config);
+
+        if (!$user) {
+            $application
+                ->response
+                ->setStatusCode(401, 'Unauthorized')
+                ->setJsonContent('Access is not authorized.')
+                ->send();
+            return false;
+        }
 
         return true;
     }

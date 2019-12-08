@@ -67,7 +67,7 @@ try {
 
 } catch (Exception $e) {
     $response = new Phalcon\Http\Response();
-    $response->setStatusCode(500, 'Internal Error');
+    $response->setStatusCode(500, 'Internal Server Error');
     $response->setJsonContent(['result' => 'error', 'message' => $e->getMessage(), 'details' => $e->getTraceAsString()]);
     $response->send();
 } 
