@@ -9,6 +9,7 @@ class TypesController extends BaseController
     {   
         $this->content['types'] = Types::find(['order' => 'ord ASC']);
         $this->content['result'] = true;
+        $this->content['message'] = [];
         $this->response->setJsonContent($this->content);
     }
     
@@ -16,23 +17,20 @@ class TypesController extends BaseController
     {
         $this->content['type'] = Types::findFirst($id);
         $this->content['result'] = true;
+        $this->content['message'] = [];
         $this->response->setJsonContent($this->content);
     }
 
     public function getOptions () {
-        $sql = "SELECT id, name, icon FROM types ORDER BY id ASC;";
-        $types = $this->db->query($sql)->fetchAll();
-        
-        $options = [];
-        foreach ($types as $type) {
-            $options[] = [
-                'value' => $type['id'],
-                'label' => $type['name'],
-                'icon' => $type['icon']
-            ];
-        }
-        $this->content['options'] = $options;
+        $sql = "
+        SELECT
+            id as value,
+            name as label
+        FROM types
+        ORDER BY id ASC;";
+        $this->content['options'] = $this->db->query($sql)->fetchAll();
         $this->content['result'] = true;
+        $this->content['message'] = [];
         $this->response->setJsonContent($this->content);   
     }
 
@@ -47,7 +45,10 @@ class TypesController extends BaseController
             $type->setTransaction($tx);
             $type->name = $request['name'];
             $type->icon = $request['icon'];
-            $type->ord = $request['ord'];
+
+            if (intval($request['ord']) > 0) {
+                $type->ord = $request['ord'];
+            }
 
             if ($type->create()) {
                 $this->content['result'] = true;

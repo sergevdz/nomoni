@@ -165,10 +165,8 @@ class SpendsController extends BaseController
                 $spend->concept = $request['concept'];
                 $spend->category_id = $request['category_id'];
 
-                $spend->date = date('Y-m-d H:i:s');
-
                 if ($request['date'] !== null && !empty($request['date'])) {
-                    $spend->date = date('Y-m-d H:i:s', strtotime($request['date']));
+                    $spend->date = date('Y-m-d', strtotime($request['date']));
                 }
 
                 if (intval($request['type_id']) > 0) {

@@ -9,29 +9,30 @@ class CategoriesController extends BaseController
     {   
         $this->content['categories'] = Categories::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
         $this->content['result'] = true;
+        $this->content['message'] = [];
         $this->response->setJsonContent($this->content);
     }
     
     public function getCategory ($id)
     {
-        $this->content['category'] = Categories::findFirst("user = {$this->loggedUserId} AND id = {$id}");
+        $this->content['category'] = Categories::findFirst("user_id = {$this->loggedUserId} AND id = {$id}");
         $this->content['result'] = true;
+        $this->content['message'] = [];
         $this->response->setJsonContent($this->content);
     }
 
     public function getOptions () {
-        $sql = "SELECT id, name FROM categories WHERE user_id = {$this->loggedUserId} ORDER BY id ASC;";
-        $types = $this->db->query($sql)->fetchAll();
-        
-        $options = [];
-        foreach ($types as $type) {
-            $options[] = [
-                'value' => $type['id'],
-                'label' => $type['name']
-            ];
-        }
+        $sql = "
+        SELECT
+            id as value,
+            name as label
+        FROM categories
+        WHERE user_id = {$this->loggedUserId}
+        ORDER BY id ASC;";
+        $options = $this->db->query($sql)->fetchAll();
         $this->content['options'] = $options;
         $this->content['result'] = true;
+        $this->content['message'] = [];
         $this->response->setJsonContent($this->content);   
     }
 
@@ -47,7 +48,10 @@ class CategoriesController extends BaseController
             $category->user_id = $this->loggedUserId;
             $category->name = $request['name'];
             $category->icon = $request['icon'];
-            $category->ord = $request['ord'];
+
+            if (intval($request['ord']) > 0) {
+                $category->ord = $request['ord'];
+            }
 
             if ($category->create()) {
                 $this->content['result'] = true;
@@ -87,7 +91,7 @@ class CategoriesController extends BaseController
                     $tx->commit();
             	} else {
                     $this->content['error'] = Helpers::getErrors($category);
-            		$this->content['message'] = Message::error('There was an error when trying to change the category.');
+            		$this->content['message'] = Message::error('There was an error when trying to update the category.');
                     $tx->rollback();
             	}
             }
