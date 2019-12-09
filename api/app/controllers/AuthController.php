@@ -85,10 +85,71 @@ class AuthController extends BaseController
             if ($user->create()) {
                 $this->content['result'] = true;
                 $this->content['message'] = Message::success('User was created.');
-                $tx->commit();
+
+                $paymentMethodsArr = [
+                    'Debit Card',
+                    'Credit Card',
+                    'Cash'
+                ];
+                foreach ($paymentMethodsArr as $pm) {
+                    $this->content['result'] = false;
+                    $paymentMethod = new PaymentMethods();
+                    $paymentMethod->setTransaction($tx);
+                    $paymentMethod->user_id = $user->id;
+                    $paymentMethod->name = $pm;
+                    $paymentMethod->created_by = $user->id;
+                    
+                    if ($paymentMethod->create()) {
+                        $this->content['result'] = true;
+                    } else {
+                        $this->content['error'] = Helpers::getErrors($paymentMethod);
+                        $this->content['message'] = Message::error('There was an error when trying to create the payment method.');
+                        $tx->rollback();
+                    }
+                }
+
+                $categoriesArr = [
+                    'Transport',
+                    'Hygiene',
+                    'Sports',
+                    'Trips',
+                    'Services',
+                    'Unknow',
+                    'Food',
+                    'Health',
+                    'Electronics',
+                    'Exercise',
+                    'Utilities',
+                    'Cleaning',
+                    'Home',
+                    'Cloths',
+                    'Entertainment',
+                    'Gifts',
+                ];
+                foreach ($categories as $c) {
+                    $this->content['result'] = false;
+                    $category = new Categories();
+                    $category->setTransaction($tx);
+                    $category->user_id = $user->id;
+                    $category->name = $c;
+                    $category->created_by = $user->id;
+
+                    if ($category->create()) {
+                        $this->content['result'] = true;
+                    } else {
+                        $this->content['error'] = Helpers::getErrors($category);
+                        $this->content['message'] = Message::error('There was an error when trying to create the category.');
+                        $tx->rollback();
+                    }
+                }
+
+                if ($this->content['result']) {
+                    $this->content['message'] = Message::success('User was created.');
+                    $tx->commit();
+                }
             } else {
                 $errorMsg = Helpers::getErrorMessage($user);
-                $this->content['message2'] = Helpers::getErrors($user);
+                // $this->content['message2'] = Helpers::getErrors($user);
                 $this->content['message'] = Message::error($errorMsg ?? 'User could not be created.');
                 $tx->rollback();
             }

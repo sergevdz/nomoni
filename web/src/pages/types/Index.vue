@@ -34,7 +34,6 @@
           >
             <template v-slot:body="props">
               <q-tr :props="props">
-                <q-td key="id" :props="props">{{ props.row.id }}</q-td>
                 <q-td key="name" :props="props">{{ props.row.name }}</q-td>
                 <q-td key="icon" :props="props"><q-icon :name="props.row.icon" size="16px" /> {{ props.row.icon }}</q-td>
                 <q-td key="ord" :props="props">{{ props.row.ord }}</q-td>
@@ -60,7 +59,6 @@ export default {
   data () {
     return {
       columns: [
-        { name: 'id', align: 'left', label: '#', field: 'id', sortable: true },
         { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: true },
         { name: 'icon', align: 'left', label: 'Icon', field: 'icon', sortable: true },
         { name: 'ord', align: 'right', label: 'Order', field: 'ord', sortable: true },

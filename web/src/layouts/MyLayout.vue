@@ -54,66 +54,54 @@
         <q-item-label header>Main</q-item-label>
         <q-item to="/dashboard">
           <q-item-section avatar>
-            <q-icon name="fas fa-chart-bar" />
+            <q-icon name="fas fa-chart-bar" size="1rem" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Dashboard</q-item-label>
-            <!-- <q-item-label caption>quasar.dev</q-item-label> -->
           </q-item-section>
         </q-item>
         <q-item to="/spends">
           <q-item-section avatar>
-            <q-icon name="fa fa-shopping-cart" />
+            <q-icon name="fa fa-shopping-cart" size="1rem" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Spends</q-item-label>
-            <!-- <q-item-label caption>quasar.dev</q-item-label> -->
           </q-item-section>
         </q-item>
+
         <q-item-label header>Configuration</q-item-label>
         <q-item to="/types">
           <q-item-section avatar>
-            <q-icon name="fa fa-asterisk" />
+            <q-icon name="fa fa-asterisk" size="1rem" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Types</q-item-label>
-            <!-- <q-item-label caption>quasar.dev</q-item-label> -->
           </q-item-section>
         </q-item>
         <q-item to="/payment-methods">
           <q-item-section avatar>
-            <q-icon name="fa fa-asterisk" />
+            <q-icon name="fa fa-asterisk" size="1rem" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Payment Methods</q-item-label>
-            <!-- <q-item-label caption>quasar.dev</q-item-label> -->
           </q-item-section>
         </q-item>
         <q-item to="/categories">
           <q-item-section avatar>
-            <q-icon name="fa fa-asterisk" />
+            <q-icon name="fa fa-asterisk" size="1rem" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Categories</q-item-label>
-            <!-- <q-item-label caption>quasar.dev</q-item-label> -->
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://twitter.com/quasarframework">
+
+        <q-item-label header>System</q-item-label>
+        <q-item to="/categories">
           <q-item-section avatar>
-            <q-icon name="rss_feed" />
+            <q-icon name="fa fa-asterisk" size="1rem" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Twitter</q-item-label>
-            <q-item-label caption>@quasarframework</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://quasar.dev/start/pick-quasar-flavour">
-          <q-item-section avatar>
-            <q-icon name="fas fa-book-open" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Quasar</q-item-label>
-            <q-item-label caption>Quasar Docs</q-item-label>
+            <q-item-label>Categories</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -153,5 +141,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.q-item__section--avatar {
+  min-width: 1rem !important;
+}
 </style>

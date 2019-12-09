@@ -39,10 +39,8 @@
             <div class="col-sm-4">
               <q-input
                 v-model="category.fields.icon"
-                :error="$v.category.fields.icon.$error"
                 label="Icon"
                 filled
-                :rules="iconRules"
               >
                 <template v-slot:append>
                   <q-icon color="primary" :name="category.fields.icon" />
@@ -52,12 +50,10 @@
             <div class="col-sm-4">
               <q-input
                 v-model="category.fields.ord"
-                :error="$v.category.fields.ord.$error"
                 filled
                 label="Order"
                 mask="#"
                 hint="Format: #"
-                :rules="ordRules"
               />
             </div>
           </div>
@@ -75,16 +71,14 @@
 
 <script>
 import api from '../../commons/api.js'
-const { required, integer, between } = require('vuelidate/lib/validators')
+const { required } = require('vuelidate/lib/validators')
 
 export default {
   name: 'NewCategory',
   validations: {
     category: {
       fields: {
-        name: { required },
-        icon: { required },
-        ord: { required, integer, between: between(0, 9) }
+        name: { required }
       }
     }
   },
@@ -103,18 +97,6 @@ export default {
     nameRules (val) {
       return [
         val => (this.$v.category.fields.name.required) || 'Name field is required.'
-      ]
-    },
-    iconRules (val) {
-      return [
-        val => (this.$v.category.fields.icon.required) || 'Icon field is required.'
-      ]
-    },
-    ordRules (val) {
-      return [
-        val => this.$v.category.fields.ord.required || 'Order field is required.',
-        val => this.$v.category.fields.ord.integer || 'Order field must be an integer.',
-        val => this.$v.category.fields.ord.between || 'Order field value must be between 0 and 9.'
       ]
     }
   },
