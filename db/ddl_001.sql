@@ -1,33 +1,28 @@
 create table users
 (
-  id bigserial not null,
+  id bigserial not null primary key,
   created_at timestamp without time zone not null default now(),
   created_by bigint not null,
   modified_at timestamp without time zone default now(),
   modified_by bigint,
   first_name text not null,
   last_name text not null,
-  email text not null,
+  email text not null unique,
   password character varying(60) not null,
   password_token text,
-  image_url text,
-  constraint users_pkey primary key (id),
-  constraint users_uk1 UNIQUE (email)
+  image_url text
 ) without oids;
 
 create table types
 (
-  id bigserial not null,
+  id bigserial not null primary key,
   created_at timestamp without time zone not null default now(),
   created_by bigint not null,
   modified_at timestamp without time zone default now(),
   modified_by bigint,
-  name text not null,
-  icon text not null,
-  ord smallint not null default 0,
-  constraint types_pkey primary key (id),
-  constraint types_uk1 UNIQUE (name),
-  constraint types_uk2 UNIQUE (icon)
+  name text not null unique,
+  icon text not null unique,
+  ord smallint not null default 0
 ) without oids;
 
 insert into types values (default, default, 1, default, 1, 'Necesary', 'content_paste', 1);
@@ -36,17 +31,14 @@ insert into types values (default, default, 1, default, 1, 'Obligatory', 'group'
 
 create table categories
 (
-  id bigserial not null,
+  id bigserial not null primary key,
   created_at timestamp without time zone not null default now(),
   created_by bigint not null,
   modified_at timestamp without time zone default now(),
   modified_by bigint,
-  name text not null,
-  icon text not null,
-  ord smallint not null default 0,
-  constraint categories_pkey primary key (id),
-  constraint categories_uk1 UNIQUE (name),
-  constraint categories_uk2 UNIQUE (icon)
+  name text not null unique,
+  icon text not null unique,
+  ord smallint not null default 0
 ) without oids;
 
 create table payment_methods
@@ -66,7 +58,7 @@ create table payment_methods
 
 create table spends
 (
-  id bigserial not null,
+  id bigserial not null primary key,
   created_at timestamp without time zone not null default now(),
   created_by bigint not null,
   modified_at timestamp without time zone default now(),
@@ -75,11 +67,7 @@ create table spends
   date timestamp without time zone not null default now(),
   concept text not null,
   description text,
-  type_id bigint not null,
-  category_id bigint not null,
-  payment_method_id bigint not null,
-  constraint spends_pkey primary key (id),
-  constraint spends_type_id_fk foreign key (type_id) references types (id),
-  constraint spends_category_id_fk foreign key (category_id) references categories (id),
-  constraint spends_payment_method_id_fk foreign key (payment_method_id) references payment_methods (id)
+  type_id bigint not null references types (id),
+  category_id bigint not null references categories (id),
+  payment_method_id bigint not null references payment_methods (id)
 ) without oids;
