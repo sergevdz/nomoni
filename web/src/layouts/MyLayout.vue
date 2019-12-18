@@ -70,14 +70,6 @@
         </q-item>
 
         <q-item-label header>Configuration</q-item-label>
-        <q-item to="/types">
-          <q-item-section avatar>
-            <q-icon name="fa fa-asterisk" size="1rem" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Types</q-item-label>
-          </q-item-section>
-        </q-item>
         <q-item to="/payment-methods">
           <q-item-section avatar>
             <q-icon name="fa fa-asterisk" size="1rem" />
@@ -96,12 +88,12 @@
         </q-item>
 
         <q-item-label header>System</q-item-label>
-        <q-item to="/categories">
+        <q-item to="/types">
           <q-item-section avatar>
             <q-icon name="fa fa-asterisk" size="1rem" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Categories</q-item-label>
+            <q-item-label>Types</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

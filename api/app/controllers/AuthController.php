@@ -126,7 +126,7 @@ class AuthController extends BaseController
                     'Entertainment',
                     'Gifts',
                 ];
-                foreach ($categories as $c) {
+                foreach ($categoriesArr as $c) {
                     $this->content['result'] = false;
                     $category = new Categories();
                     $category->setTransaction($tx);
@@ -149,7 +149,6 @@ class AuthController extends BaseController
                 }
             } else {
                 $errorMsg = Helpers::getErrorMessage($user);
-                // $this->content['message2'] = Helpers::getErrors($user);
                 $this->content['message'] = Message::error($errorMsg ?? 'User could not be created.');
                 $tx->rollback();
             }
