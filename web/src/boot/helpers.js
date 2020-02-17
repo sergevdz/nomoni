@@ -3,11 +3,11 @@ import { Dialog } from 'quasar'
 export default ({ app, Vue }) => {
   // TODO - Write docs
 
-  Vue.prototype.$showMessage = (title, message) => {
+  Vue.prototype.$showMessage = (title, message, persistent = false) => {
     Dialog.create({
       title: title,
       message: message,
-      persistent: true
+      persistent: persistent
     })
   }
 

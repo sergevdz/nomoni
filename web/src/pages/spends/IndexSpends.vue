@@ -46,14 +46,6 @@
                 flat
                 bordered
                 binary-state-sort>
-                <!-- <template v-slot:top-left>
-                  <q-input borderless dense filled debounce="334" v-model="filter" placeholder="Search">
-                    <template v-slot:append>
-                      <q-icon name="search" />
-                    </template>
-                  </q-input>
-                </template> -->
-
                 <template v-slot:body="props">
                   <q-tr :props="props">
                     <q-td key="format_date" :props="props">
