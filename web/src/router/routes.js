@@ -26,9 +26,9 @@ const routes = [
       { path: 'categories', component: () => import('pages/categories/Index.vue') },
       { path: 'categories/new', component: () => import('pages/categories/New.vue') },
       { path: 'categories/:id', component: () => import('pages/categories/Edit.vue') },
-      { path: 'spends', component: () => import('pages/spends/IndexSpends.vue') },
-      { path: 'spends/new', component: () => import('pages/spends/NewSpend.vue') },
-      { path: 'spends/:id', component: () => import('pages/spends/EditSpend.vue') }
+      { path: 'spends', component: () => import('pages/spends/Index.vue') },
+      { path: 'spends/new', component: () => import('pages/spends/New.vue') },
+      { path: 'spends/:id', component: () => import('pages/spends/Edit.vue') }
     ]
   }
 ]

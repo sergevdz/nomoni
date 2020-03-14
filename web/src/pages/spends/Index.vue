@@ -146,11 +146,23 @@ export default {
         persistent: true
       }).onOk(() => {
         api.delete(`/spends/${id}`).then(({ data }) => {
-          this.$q.dialog({
-            title: data.message.title,
-            message: data.message.content,
-            persistent: true
+          this.$q.notify({
+            // color: 'primary',
+            // textColor,
+            icon: 'far fa-check-circle',
+            message: data.message.title + ' ' + data.message.content,
+            // caption: data.message.content,
+            position: 'top-right',
+            // avatar,
+            multiLine: true,
+            actions: [ { label: 'Dismiss', color: 'positive', handler: () => {} } ],
+            timeout: 2500
           })
+          // this.$q.dialog({
+          //   title: data.message.title,
+          //   message: data.message.content,
+          //   persistent: true
+          // })
           if (data.result) {
             this.fetchFromServer()
           }
