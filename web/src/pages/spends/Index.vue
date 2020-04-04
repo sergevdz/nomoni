@@ -56,8 +56,8 @@
                     </q-td>
                     <q-td key="amount" :props="props">$ {{ $formatNumber(props.row.amount, 2) }}</q-td>
                     <q-td key="concept" :props="props">{{ props.row.concept }}</q-td>
-                    <!-- <q-td key="type" :props="props">{{ props.row.type }}</q-td>
-                    <q-td key="payment_method" :props="props">{{ props.row.payment_method }}</q-td> -->
+                    <q-td key="type" :props="props">{{ props.row.type }}</q-td>
+                    <!-- <q-td key="payment_method" :props="props">{{ props.row.payment_method }}</q-td> -->
                     <q-td key="category" :props="props">
                       {{ props.row.category }}
                       </q-td>
@@ -91,7 +91,7 @@ export default {
         { name: 'format_date', label: 'Date', field: 'format_date', sortable: true, align: 'left' },
         { name: 'amount', label: 'Amount', field: 'amount', sortable: true, align: 'left' },
         { name: 'concept', label: 'Concept', field: 'concept', sortable: true, align: 'right' },
-        // { name: 'type', label: 'Type', field: 'type', sortable: true, align: 'right' },
+        { name: 'type', label: 'Type', field: 'type', sortable: true, align: 'right' },
         // { name: 'payment_method', label: 'Payment Method', field: 'payment_method', sortable: true, align: 'right' },
         { name: 'category', label: 'Category', field: 'category', sortable: true, align: 'right' },
         { name: 'actions', label: 'Actions', field: 'actions', sortable: false, align: 'center' }

@@ -11,3 +11,7 @@ alter table categories drop constraint categories_uk1;
 alter table categories drop constraint categories_uk2;
 alter table categories alter column icon drop not null;
 alter table categories add unique (user_id, name);
+
+update spends set type_id = 1 where type_id is null;
+alter table spends alter column type_id set default 1;
+alter table spends alter column type_id set not null;

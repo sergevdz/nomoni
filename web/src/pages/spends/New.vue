@@ -138,7 +138,7 @@ export default {
           date: null,
           concept: null,
           note: null,
-          type_id: null,
+          type_id: 1,
           payment_method_id: null,
           category_id: null
         },
