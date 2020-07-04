@@ -7,7 +7,7 @@ const generals = {
     rowsPerPage: 7,
     rowsNumber: 0
   },
-  rowsOptions: [3, 5, 7, 10, 50, 200, 500, 0]
+  rowsOptions: [7, 10, 50]
 }
 
 export default generals

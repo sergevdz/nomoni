@@ -10,7 +10,7 @@ class BaseController extends Controller
 
 	public $loggedUserId;
 
-	public function onConstruct ()
+	public function onConstruct()
     {
 		$this->content = [
 			'result' => false,

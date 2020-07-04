@@ -55,3 +55,5 @@ $spends->get('/get-grouped-by-type', 'getSpendGroupedByType');
 $spends->get('/get-grouped-by-payment-method', 'getSpendGroupedByPaymentMethod');
 $spends->get('/get-last-five-months', 'getLastFiveMonths');
 $app->mount($spends);
+
+$router->addGet('/users/{id:[0-9]+}/spends', 'SpendsController::getByUser');

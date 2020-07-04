@@ -5,18 +5,26 @@ use \Firebase\JWT\JWT;
 
 class Auth
 {
-    public static function getTokenData (Phalcon\Config $config)
+    public static function getTokenData(Phalcon\Config $config)
     {
-
         try {
             $headers = getallheaders();
 
-            if(!isset($headers['Authorization']) || empty($headers['Authorization'])) {
+            $auth = '';
+            
+            if (isset ($headers['Authorization'])) {
+                $auth = $headers['Authorization'];
+            } else if (isset($headers['authorization'])) {
+                $auth = $headers['authorization'];
+            }
+
+            if (empty($auth)) {
                 return null;
             }
 
             $secretKey = base64_decode($config->jwtkey);
-            $jwt = explode(' ', $headers['Authorization']);
+            $jwt = explode(' ', $auth);
+
             $decodedToken = JWT::decode($jwt[1], $secretKey, ['HS512']);
 
             return $decodedToken->data ?? null;
@@ -25,7 +33,7 @@ class Auth
         }
     }
 
-    public static function getUserId (string $email, string $password): int
+    public static function getUserId(string $email, string $password): int
     {
         try {
             $user = Users::findFirst(
@@ -57,7 +65,7 @@ class Auth
         return -1;
     }
 
-    public static function createToken (string $serverName, array $data, string $jwtKey): string
+    public static function createToken(string $serverName, array $data, string $jwtKey): string
     {
         $tokenId = base64_encode(random_bytes(32));
         $issuedAt = time();

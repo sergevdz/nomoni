@@ -4,6 +4,7 @@ date_default_timezone_set('America/Mexico_City');
 error_reporting(E_ALL);
 
 use Phalcon\Mvc\Micro;
+use Phalcon\Mvc\Router;
 use Phalcon\Events\Manager;
 
 
@@ -46,7 +47,8 @@ try {
      * Assign service locator to the application
      */
     $app = new Micro($di);
-    
+
+
     $eventsManager->attach('micro', new CORSMiddleware());
     $app->before(new CORSMiddleware());
     
@@ -54,11 +56,14 @@ try {
     $app->before(new ResponseMiddleware());
 
     $app->setEventsManager($eventsManager);
-
+    $router = new Router();
+    
     /**
      * Include Application
      */
     include APP_PATH . '/app.php';
+    
+    $app->setService('router', $router, true);
 
     /**
      * Handle the request
@@ -68,6 +73,10 @@ try {
 } catch (Exception $e) {
     $response = new Phalcon\Http\Response();
     $response->setStatusCode(500, 'Internal Server Error');
-    $response->setJsonContent(['result' => 'error', 'message' => $e->getMessage(), 'details' => $e->getTraceAsString()]);
+    $response->setJsonContent([
+        'result' => false,
+        'message' => 'Internal Server Error',
+        'errors' => Message::exception($e)
+    ]);
     $response->send();
 } 

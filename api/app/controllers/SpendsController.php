@@ -5,7 +5,7 @@ use Phalcon\Mvc\Controller;
 class SpendsController extends BaseController
 {
 
-    public function getSpends ()
+    public function getSpends()
     {   
         $this->content['spends'] = Spends::find(
             [
@@ -18,7 +18,22 @@ class SpendsController extends BaseController
         $this->response->setJsonContent($this->content);
     }
 
-    public function getFilteredSpends ()
+    public function getByUser($userId)
+    {   
+        $content = $this->content;
+        $content['spends'] = Spends::find(
+            [
+                'user_id = ' . $userId,
+                'order' => 'id DESC', 
+                'limit' => '20000'
+            ]
+        );
+        $content['result'] = true;
+        $this->response->setJsonContent($content);
+        $this->response->send();
+    }
+
+    public function getFilteredSpends()
     {   
         $request = $this->request->getPost();
         
@@ -74,7 +89,7 @@ class SpendsController extends BaseController
         $this->response->setJsonContent($this->content);
     }
 
-    public function getLastFiveMonths () {
+    public function getLastFiveMonths() {
         $months = [];
         $currentDate = date('Y-m');
 
@@ -103,7 +118,7 @@ class SpendsController extends BaseController
         $this->response->setJsonContent($this->content);
     }
 
-    public function create ()
+    public function create()
     {
         try {
             $tx = $this->transactions->get();
@@ -225,7 +240,7 @@ class SpendsController extends BaseController
         $this->response->setJsonContent($this->content);
     }
 
-    public function getDailyExpenses () {
+    public function getDailyExpenses() {
         $today = date('Y-m-d');
         $sql = "SELECT amount FROM spends where user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM-DD') = '$today';";
         $spends = $this->db->query($sql)->fetchAll();
@@ -243,7 +258,7 @@ class SpendsController extends BaseController
     }
 
 
-    public function getMonthlyExpenses () {
+    public function getMonthlyExpenses() {
         $today = date('Y-m');
         $sql = "SELECT amount FROM spends where user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '$today';";
         $spends = $this->db->query($sql)->fetchAll();
@@ -263,7 +278,7 @@ class SpendsController extends BaseController
     /**
      * A list with de spends of the current month grouped by category
      */
-    public function getSpendGroupedByCategory ()
+    public function getSpendGroupedByCategory()
     {
         $today = date('Y-m');
         $sql = "        
@@ -284,7 +299,7 @@ class SpendsController extends BaseController
     /**
      * A list with de spends of the current month grouped by type
      */
-    public function getSpendGroupedByType ()
+    public function getSpendGroupedByType()
     {
         $today = date('Y-m');
         $sql = "        
@@ -305,7 +320,7 @@ class SpendsController extends BaseController
     /**
      * A list with de spends of the current month grouped by payment method
      */
-    public function getSpendGroupedByPaymentMethod ()
+    public function getSpendGroupedByPaymentMethod()
     {
         $today = date('Y-m');
         $sql = "        

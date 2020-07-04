@@ -18,7 +18,7 @@ $app->options('/{catch:(.*)}', function() use ($app) {
 $app->get('/', function () use ($app) {
     $app->response
         ->setStatusCode(200, 'OK')
-        ->setJsonContent('Se ha desactivado la seguridad por tokens!!!.');
+        ->setJsonContent(['result' => true, 'message' => 'Se ha desactivado la seguridad por tokens!!!.']);
 });
 
 include_once APP_PATH . '/routes.php';
@@ -30,7 +30,7 @@ $app->notFound(
     function () use ($app) {
         $app->response
             ->setStatusCode(404, 'Not Found')
-            ->setJsonContent('Not Found.');
+            ->setJsonContent(['result' => false, 'message' => 'Not Found.']);
     }
 );
 
@@ -41,6 +41,6 @@ $app->error(
     function ($exception) use ($app) {
         $app->response
             ->setStatusCode(500, 'Internal Error')
-            ->setJsonContent('Internal Error.');
+            ->setJsonContent(['result' => false, 'message' => 'Internal Error.']);
     }
 );

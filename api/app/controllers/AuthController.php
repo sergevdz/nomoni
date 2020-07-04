@@ -4,12 +4,10 @@ use Phalcon\Mvc\Controller;
 
 class AuthController extends BaseController
 {
-    /**
-     * User Login
-     *
-     */
-    public function login ()
+    public function login()
     {
+        $content = $this->content;
+
         try {
             $request = $this->request->getPost();
 
@@ -18,27 +16,25 @@ class AuthController extends BaseController
                 
                 if ($userId > -1) {
                     $data = ['id' => $userId];
-                    $jwt = Auth::createToken($this->request->getHttpHost(), $data, $this->config->jwtkey);
-                    $this->content['jwt'] = $jwt;
-                    $this->content['result'] = true;
+                    $content['jwt'] = Auth::createToken($this->request->getHttpHost(), $data, $this->config->jwtkey);;
+                    $content['result'] = true;
                 } else {
-                    $this->content['message'] = Message::warning('Email or password doesn\'t match with any user.');
+                    $content['message'] = Message::warning("Email or password doesn't match with any user.");
                 }
             } else {
-                $this->content['message'] = Message::warning('Please write the email and password\'s account.');
+                $content['message'] = Message::warning("Please write the email and password's account.");
             }
         } catch (Exception $e) {
-            $this->content['errors'] = Message::exception($e);
+            $content['errors'] = Message::exception($e);
         }
         
-        $this->response->setJsonContent($this->content);
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
 
-    /**
-     * User Sign Up
-     *
-     */
-    public function signup () {
+    public function signup() {
+        $content = $this->content;
+
         try {
             $request = $this->request->getPost();
             $tx = $this->transactions->get();
@@ -46,17 +42,17 @@ class AuthController extends BaseController
             $passwordIsNotEmpty = $request['password'] === null || $request['password'] === '' || empty($request['password']);
             
             if ($passwordIsNotEmpty) {
-                $this->content['message'] = Message::warning('Please type a password.');
+                $content['message'] = Message::warning('Please type a password.');
                 $tx->rollback();
             }
 
             if ($request['password'] !== $request['confirmPassword'] && $passwordIsNotEmpty) {
-                $this->content['message'] = Message::warning("The email address is already in use.");
+                $content['message'] = Message::warning("The email address is already in use.");
                 $tx->rollback();
             }
 
             if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
-                $this->content['message'] = Message::warning('Entered email is invalid.');
+                $content['message'] = Message::warning('Entered email is invalid.');
                 $tx->rollback();
             }
 
@@ -70,7 +66,7 @@ class AuthController extends BaseController
             );
 
             if ($user) {
-                $this->content['message'] = Message::warning('Entered email is already in use.');
+                $content['message'] = Message::warning('Entered email is already in use.');
                 $tx->rollback();   
             }
 
@@ -83,8 +79,8 @@ class AuthController extends BaseController
             $user->password = password_hash($request['password'], PASSWORD_BCRYPT);
 
             if ($user->create()) {
-                $this->content['result'] = true;
-                $this->content['message'] = Message::success('User was created.');
+                $content['result'] = true;
+                $content['message'] = Message::success('User was created.');
 
                 $paymentMethodsArr = [
                     'Debit Card',
@@ -92,7 +88,7 @@ class AuthController extends BaseController
                     'Cash'
                 ];
                 foreach ($paymentMethodsArr as $pm) {
-                    $this->content['result'] = false;
+                    $content['result'] = false;
                     $paymentMethod = new PaymentMethods();
                     $paymentMethod->setTransaction($tx);
                     $paymentMethod->user_id = $user->id;
@@ -100,10 +96,10 @@ class AuthController extends BaseController
                     $paymentMethod->created_by = $user->id;
                     
                     if ($paymentMethod->create()) {
-                        $this->content['result'] = true;
+                        $content['result'] = true;
                     } else {
-                        $this->content['error'] = Helpers::getErrors($paymentMethod);
-                        $this->content['message'] = Message::error('There was an error when trying to create the payment method.');
+                        $content['error'] = Helpers::getErrors($paymentMethod);
+                        $content['message'] = Message::error('There was an error when trying to create the payment method.');
                         $tx->rollback();
                     }
                 }
@@ -127,7 +123,7 @@ class AuthController extends BaseController
                     'Gifts',
                 ];
                 foreach ($categoriesArr as $c) {
-                    $this->content['result'] = false;
+                    $content['result'] = false;
                     $category = new Categories();
                     $category->setTransaction($tx);
                     $category->user_id = $user->id;
@@ -135,27 +131,28 @@ class AuthController extends BaseController
                     $category->created_by = $user->id;
 
                     if ($category->create()) {
-                        $this->content['result'] = true;
+                        $content['result'] = true;
                     } else {
-                        $this->content['error'] = Helpers::getErrors($category);
-                        $this->content['message'] = Message::error('There was an error when trying to create the category.');
+                        $content['error'] = Helpers::getErrors($category);
+                        $content['message'] = Message::error('There was an error when trying to create the category.');
                         $tx->rollback();
                     }
                 }
 
-                if ($this->content['result']) {
-                    $this->content['message'] = Message::success('User was created.');
+                if ($content['result']) {
+                    $content['message'] = Message::success('User was created.');
                     $tx->commit();
                 }
             } else {
                 $errorMsg = Helpers::getErrorMessage($user);
-                $this->content['message'] = Message::error($errorMsg ?? 'User could not be created.');
+                $content['message'] = Message::error($errorMsg ?? 'User could not be created.');
                 $tx->rollback();
             }
         } catch (Exception $e) {
-            $this->content['errors'] = Message::exception($e);
+            $content['errors'] = Message::exception($e);
         }
 
-        $this->response->setJsonContent($this->content);
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
 }
