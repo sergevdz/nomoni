@@ -4,7 +4,6 @@ date_default_timezone_set('America/Mexico_City');
 error_reporting(E_ALL);
 
 use Phalcon\Mvc\Micro;
-use Phalcon\Mvc\Router;
 use Phalcon\Events\Manager;
 
 
@@ -48,7 +47,6 @@ try {
      */
     $app = new Micro($di);
 
-
     $eventsManager->attach('micro', new CORSMiddleware());
     $app->before(new CORSMiddleware());
     
@@ -56,14 +54,11 @@ try {
     $app->before(new ResponseMiddleware());
 
     $app->setEventsManager($eventsManager);
-    $router = new Router();
     
     /**
      * Include Application
      */
     include APP_PATH . '/app.php';
-    
-    $app->setService('router', $router, true);
 
     /**
      * Handle the request

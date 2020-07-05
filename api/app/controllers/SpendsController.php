@@ -20,6 +20,7 @@ class SpendsController extends BaseController
 
     public function getByUser($userId)
     {   
+        // HERE Sacando los gastos del usuario
         $content = $this->content;
         $content['spends'] = Spends::find(
             [

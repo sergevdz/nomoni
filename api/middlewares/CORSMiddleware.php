@@ -41,10 +41,6 @@ class CORSMiddleware implements MiddlewareInterface
             return true;
         }
 
-        if (strpos($application->request->getURI(), '/users') !== false) {
-            return true;
-        }
-
         $user = Auth::getTokenData($application->config);
 
         if (!$user) {
