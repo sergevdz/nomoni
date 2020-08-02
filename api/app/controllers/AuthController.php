@@ -24,6 +24,13 @@ class AuthController extends BaseController
             } else {
                 $content['message'] = Message::warning("Please write the email and password's account.");
             }
+        } catch (PDOException $e) {
+            $content['errors'] = [
+                'class' => get_class($e),
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                // 'trace' => $e->getTraceAsString()
+            ];
         } catch (Exception $e) {
             $content['errors'] = Message::exception($e);
         }

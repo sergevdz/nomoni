@@ -35,31 +35,24 @@ class Auth
 
     public static function getUserId(string $email, string $password): int
     {
-        try {
-            $user = Users::findFirst(
-                [
-                    'email = :email:',
-                    'bind' => [
-                        'email' => $email
-                    ]
+        $user = Users::findFirst(
+            [
+                'email = :email:',
+                'bind' => [
+                    'email' => $email
                 ]
-            );
+            ]
+        );
 
-            if ($user) {
+        if ($user) {
 
-                if (password_verify($password, $user->password) || $user->password_token === $password) {
-                    $user->password_token = null;
+            if (password_verify($password, $user->password) || $user->password_token === $password) {
+                $user->password_token = null;
 
-                    if ($user->update()) {
-                        return intval($user->id);
-                    } else {
-                        var_dump(Helpers::getErrors($user));
-                    }
+                if ($user->update()) {
+                    return intval($user->id);
                 }
             }
-
-        } catch (Exception $e) {
-             var_dump(Message::exception($e));
         }
 
         return -1;

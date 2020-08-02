@@ -31,10 +31,6 @@ try {
      */
     include APP_PATH . '/config/services.php';
 
-    /**
-     * Call the autoloader service.  We don't need to keep the results.
-     */
-    // $di->getLoader();
 
     /*
      * Create a events manager
@@ -49,9 +45,6 @@ try {
 
     $eventsManager->attach('micro', new CORSMiddleware());
     $app->before(new CORSMiddleware());
-    
-    $eventsManager->attach('micro', new ResponseMiddleware());
-    $app->before(new ResponseMiddleware());
 
     $app->setEventsManager($eventsManager);
     
@@ -67,11 +60,12 @@ try {
 
 } catch (Exception $e) {
     $response = new Phalcon\Http\Response();
-    $response->setStatusCode(500, 'Internal Server Error');
-    $response->setJsonContent([
-        'result' => false,
-        'message' => 'Internal Server Error',
-        'errors' => Message::exception($e)
-    ]);
-    $response->send();
+    $response
+        ->setStatusCode(500, 'Internal Server Error')
+        ->setJsonContent([
+            'result' => false,
+            'message' => 'Internal Server Error',
+            'errors' => Message::exception($e)
+        ])
+        ->send();
 } 

@@ -39,8 +39,9 @@ $app->notFound(
  */
 $app->error(
     function ($exception) use ($app) {
-        $app->response
-            ->setStatusCode(500, 'Internal Error')
-            ->setJsonContent(['result' => false, 'message' => 'Internal Error.']);
+        // $app->response
+        //     ->setStatusCode(500, 'Internal Error')
+        //     ->setJsonContent(['result' => false, 'message' => 'Internal Error.']);
+        throw $exception;
     }
 );

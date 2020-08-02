@@ -10,7 +10,7 @@ $auth->post('/signup', 'signup');
 $app->mount($auth);
 
 $users = new ControllerCollection(new UsersController(), '/users');
-$users->get('/profile', 'profile');
+$users->get('/profile', 'getProfile');
 $app->mount($users);
 
 $types = new ControllerCollection(new TypesController(), '/types');
@@ -40,9 +40,9 @@ $categories->put('/{id:[0-9]+}', 'update');
 $categories->delete('/{id:[0-9]+}', 'delete');
 $app->mount($categories);
 
-$pends = new ControllerCollection(new SpendsController(), '/spends');
-$pends->get('/', 'getSpends');
-$pends->get('/{id:[0-9]+}', 'getSpend');
+$pends = new ControllerCollection(new ExpensesController(), '/spends');
+$pends->get('/', 'getAll');
+$pends->get('/{id:[0-9]+}', 'get');
 $pends->post('/', 'create');
 $pends->put('/{id:[0-9]+}', 'update');
 $pends->delete('/{id:[0-9]+}', 'delete');

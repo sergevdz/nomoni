@@ -17,6 +17,11 @@ class BaseController extends Controller
 			'message' => Message::error('Internal Server Error.')
 		];
 
-		$this->loggedUserId = Auth::getTokenData($this->config)->id ?? null;
+		$this->loggedUserId = null;
+		$tokenData = Auth::getTokenData($this->config);
+		
+		if (isset($tokenData)) {
+			$this->loggedUserId = isset($tokenData->id) ? intval($tokenData->id) : null;
+		}
 	}
 }
