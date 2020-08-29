@@ -7,7 +7,7 @@ class ExpensesController extends BaseController
     function getAll()
     {   
         $content = $this->content;
-        $content['spends'] = Spends::find(
+        $content['expenses'] = Spends::find(
             [
                 "user_id = {$this->loggedUserId}",
                 'order' => 'date DESC', 
@@ -22,8 +22,9 @@ class ExpensesController extends BaseController
     function get($id)
     {   
         $content = $this->content;
-        $content['expense'] = Spends::findFirst("user_id = {$this->loggedUserId}  AND id = {$id}");
-        $content['result'] = true;
+        $expense = Spends::findFirst("user_id = {$this->loggedUserId}  AND id = {$id}");
+        $content['expense'] = $expense;
+        $content['result'] = !empty($expense);
         $this->response->setJsonContent($content);
         $this->response->send();
     }
@@ -31,7 +32,7 @@ class ExpensesController extends BaseController
     function getByUser($userId)
     {   
         $content = $this->content;
-        $content['spends'] = Spends::find(
+        $content['expenses'] = Spends::find(
             [
                 'user_id = ' . $userId,
                 'order' => 'id DESC', 
@@ -93,7 +94,7 @@ class ExpensesController extends BaseController
 
         $spends = $this->db->query($sql)->fetchAll();
         
-        $content['spends'] = $spends;
+        $content['expenses'] = $spends;
         $content['count'] = Spends::find()->count();
         
         $content['result'] = true;
@@ -315,7 +316,7 @@ class ExpensesController extends BaseController
         GROUP BY spends.category_id, categories.name, categories.ord
         ORDER BY categories.ord;";
         $spends = $this->db->query($sql)->fetchAll();
-        $this->content['spends'] = $spends;
+        $this->content['expenses'] = $spends;
         $this->response->setJsonContent($this->content);
         $this->response->send();
     }
@@ -337,7 +338,7 @@ class ExpensesController extends BaseController
         GROUP BY spends.type_id, types.name, types.ord
         ORDER BY types.ord;";
         $spends = $this->db->query($sql)->fetchAll();
-        $this->content['spends'] = $spends;
+        $this->content['expenses'] = $spends;
         $this->response->setJsonContent($this->content);
         $this->response->send();
     }
@@ -359,7 +360,7 @@ class ExpensesController extends BaseController
         GROUP BY spends.payment_method_id, payment_methods.name, payment_methods.ord
         ORDER BY payment_methods.ord;";
         $spends = $this->db->query($sql)->fetchAll();
-        $this->content['spends'] = $spends;
+        $this->content['expenses'] = $spends;
         $this->response->setJsonContent($this->content);
         $this->response->send();  
     }

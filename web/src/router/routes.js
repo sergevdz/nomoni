@@ -1,6 +1,6 @@
 import Login from 'pages/Login'
 import SignUp from 'pages/SignUp'
-import MyLayout from 'layouts/MyLayout'
+import MainLayout from 'layouts/MainLayout'
 
 const routes = [
   {
@@ -13,7 +13,7 @@ const routes = [
   },
   {
     path: '/',
-    component: MyLayout,
+    component: MainLayout,
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/dashboard', component: () => import('pages/Dashboard.vue') },
@@ -26,9 +26,9 @@ const routes = [
       { path: 'categories', component: () => import('pages/categories/Index.vue') },
       { path: 'categories/new', component: () => import('pages/categories/New.vue') },
       { path: 'categories/:id', component: () => import('pages/categories/Edit.vue') },
-      { path: 'spends', component: () => import('pages/spends/Index.vue') },
-      { path: 'spends/new', component: () => import('pages/spends/New.vue') },
-      { path: 'spends/:id', component: () => import('pages/spends/Edit.vue') }
+      { path: 'expenses', component: () => import('pages/expenses/Index.vue') },
+      { path: 'expenses/new', component: () => import('pages/expenses/New.vue') },
+      { path: 'expenses/:id', component: () => import('pages/expenses/Edit.vue') }
     ]
   },
 

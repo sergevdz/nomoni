@@ -19,7 +19,7 @@
     <block-content first>
       <div class="row q-mb-sm q-col-gutter-md">
         <div class="col-sm-12">
-          <span class="block-title-text">Spends summary</span>
+          <span class="block-title-text">Expenses summary</span>
         </div>
         <div class="col-sm-8">
           <span class="block-subtitle-text">Overview of Latest Month</span>
@@ -46,13 +46,13 @@
             </template>
           </span>
           <br />
-          <span class="block-undertitle-text">Current month spends</span>
+          <span class="block-undertitle-text">Current month expenses</span>
         </div>
 
         <div class="col-sm-12">
           <span class="block-title-text">$ {{ $formatNumber(dailyAmount) }}</span>
           <br />
-          <span class="block-undertitle-text">Current daily spends</span>
+          <span class="block-undertitle-text">Current daily expenses</span>
         </div>
       </div>
     </block-content>
@@ -60,9 +60,9 @@
     <block-content>
       <div class="row q-mb-sm q-col-gutter-md">
         <div class="col-sm-6">
-          <span class="block-title-text">Spends</span>
+          <span class="block-title-text">Expenses</span>
           <br />
-          <span class="block-undertitle-text">Overview of Last five months of Spends</span>
+          <span class="block-undertitle-text">Overview of Last five months of Expenses</span>
         </div>
       </div>
       <div class="row q-col-gutter-md">
@@ -90,7 +90,7 @@
         <div class="col-sm-6">
           <span class="block-title-text">Categories</span>
           <br />
-          <span class="block-undertitle-text">Overview of Spends by Category</span>
+          <span class="block-undertitle-text">Overview of Expenses by Category</span>
         </div>
       </div>
       <div class="row q-col-gutter-md">
@@ -103,9 +103,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="spend in groupedByCategory" :key="spend.name">
-                <td>{{ spend.name }}</td>
-                <td>{{ spend.amount }}</td>
+              <tr v-for="expense in groupedByCategory" :key="expense.name">
+                <td>{{ expense.name }}</td>
+                <td>{{ expense.amount }}</td>
               </tr>
             </tbody>
           </q-markup-table>
@@ -118,7 +118,7 @@
         <div class="col-sm-6">
           <span class="block-title-text">Types</span>
           <br />
-          <span class="block-undertitle-text">Overview of Spends by Type</span>
+          <span class="block-undertitle-text">Overview of Expenses by Type</span>
         </div>
       </div>
       <div class="row q-col-gutter-md">
@@ -131,9 +131,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="spend in groupedByType" :key="spend.name">
-                <td>{{ spend.name }}</td>
-                <td>{{ spend.amount }}</td>
+              <tr v-for="expense in groupedByType" :key="expense.name">
+                <td>{{ expense.name }}</td>
+                <td>{{ expense.amount }}</td>
               </tr>
             </tbody>
           </q-markup-table>
@@ -146,7 +146,7 @@
         <div class="col-sm-6">
           <span class="block-title-text">Payment methods</span>
           <br />
-          <span class="block-undertitle-text">Overview of Spends by payment Payment method</span>
+          <span class="block-undertitle-text">Overview of Expenses by payment Payment method</span>
         </div>
       </div>
       <div class="row q-col-gutter-md">
@@ -159,9 +159,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="spend in groupedByPaymentMethod" :key="spend.name">
-                <td>{{ spend.name }}</td>
-                <td>{{ spend.amount }}</td>
+              <tr v-for="expense in groupedByPaymentMethod" :key="expense.name">
+                <td>{{ expense.name }}</td>
+                <td>{{ expense.amount }}</td>
               </tr>
             </tbody>
           </q-markup-table>
@@ -203,9 +203,9 @@ export default {
         { label: 'Dec', value: '12' }
       ],
       fakeData: [
-        { monthName: 'Jan', monthsSpends: '$ 100.00', monthsPercentage: '% 19' },
-        { monthName: 'Feb', monthsSpends: '$ 301.47', monthsPercentage: '% 299' },
-        { monthName: 'Mar', monthsSpends: '$ 400.99', monthsPercentage: '% 15' }
+        { monthName: 'Jan', monthsExpenses: '$ 100.00', monthsPercentage: '% 19' },
+        { monthName: 'Feb', monthsExpenses: '$ 301.47', monthsPercentage: '% 299' },
+        { monthName: 'Mar', monthsExpenses: '$ 400.99', monthsPercentage: '% 15' }
       ],
       groupedByCategory: [],
       groupedByType: [],
@@ -222,19 +222,19 @@ export default {
     async loadAll () {
       await this.loadExpenses()
       await this.loadTables()
-      await api.get('spends/get-last-five-months').then(({ data }) => {
+      await api.get('expenses/get-last-five-months').then(({ data }) => {
         this.lastFiveMonths = data.months
       })
     },
     async loadExpenses () {
       this.loadingDaily = true
-      await api.get('spends/daily').then(({ data }) => {
+      await api.get('expenses/daily').then(({ data }) => {
         this.dailyAmount = data.dailyAmount
       })
       this.loadingDaily = false
 
       this.loadingMonthly = true
-      await api.get('spends/monthly').then(({ data }) => {
+      await api.get('expenses/monthly').then(({ data }) => {
         this.monthlyAmount = data.monthlyAmount
       })
       this.loadingMonthly = false
@@ -245,18 +245,18 @@ export default {
       await this.getGroupedByPaymentMethod()
     },
     async getGroupedByCategory () {
-      await api.get('spends/get-grouped-by-category').then(({ data }) => {
-        this.groupedByCategory = data.spends
+      await api.get('expenses/get-grouped-by-category').then(({ data }) => {
+        this.groupedByCategory = data.expenses
       })
     },
     async getGroupedByType () {
-      await api.get('spends/get-grouped-by-type').then(({ data }) => {
-        this.groupedByType = data.spends
+      await api.get('expenses/get-grouped-by-type').then(({ data }) => {
+        this.groupedByType = data.expenses
       })
     },
     async getGroupedByPaymentMethod () {
-      await api.get('spends/get-grouped-by-payment-method').then(({ data }) => {
-        this.groupedByPaymentMethod = data.spends
+      await api.get('expenses/get-grouped-by-payment-method').then(({ data }) => {
+        this.groupedByPaymentMethod = data.expenses
       })
     }
   }

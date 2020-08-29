@@ -10,6 +10,7 @@ class PaymentMethodsController extends BaseController
         $this->content['paymentMethods'] = PaymentMethods::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
     
     public function getPaymentMethod ($id)
@@ -17,6 +18,7 @@ class PaymentMethodsController extends BaseController
         $this->content['paymentMethod'] = PaymentMethods::findFirst("user_id = {$this->loggedUserId} AND id = $id");
         $this->content['result'] = true;
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 
     public function getOptions () {
@@ -32,7 +34,8 @@ class PaymentMethodsController extends BaseController
         }
         $this->content['options'] = $options;
         $this->content['result'] = true;
-        $this->response->setJsonContent($this->content);   
+        $this->response->setJsonContent($this->content);
+        $this->response->send();   
     }
 
     public function create ()
@@ -63,6 +66,7 @@ class PaymentMethodsController extends BaseController
         }
 
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 
     public function update ($id)
@@ -96,6 +100,7 @@ class PaymentMethodsController extends BaseController
         }
 
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 
     public function delete ($id)
@@ -125,5 +130,6 @@ class PaymentMethodsController extends BaseController
         }
 
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 }

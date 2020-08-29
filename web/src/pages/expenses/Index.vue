@@ -3,13 +3,13 @@
     <div class="q-pa-sm panel-header">
       <div class="row">
         <div class="col-sm-9 col-xs-12">
-          <span class="q-ml-md grey-8 fs28 page-title">Spends</span>
+          <span class="q-ml-md grey-8 fs28 page-title">Expenses</span>
         </div>
         <div class="col-sm-3 col-xs-12 pull-right">
           <div class="q-pa-md q-gutter-sm">
             <q-breadcrumbs align="right">
               <q-breadcrumbs-el label="" icon="home" to="/" />
-              <q-breadcrumbs-el label="Spends" />
+              <q-breadcrumbs-el label="Expenses" />
             </q-breadcrumbs>
           </div>
         </div>
@@ -28,7 +28,7 @@
               </q-input>
             </div>
             <div class="col-sm-2 offset-sm-6 pull-right">
-              <q-btn color="primary" label="New" @click.native="$router.push('/spends/new')" />
+              <q-btn color="primary" label="New" @click.native="$router.push('/expenses/new')" />
             </div>
           </div>
 
@@ -83,7 +83,7 @@ import generals from '../../commons/generals.js'
 import api from '../../commons/api.js'
 
 export default {
-  name: 'IndexSpends',
+  name: 'IndexExpenses',
   data () {
     return {
       data: [],
@@ -123,10 +123,10 @@ export default {
         descending: descending,
         filter: props.filter
       }
-      await api.post('spends/spends', params).then(({ data }) => {
+      await api.post('expenses/expenses', params).then(({ data }) => {
         if (data.result) {
           this.pagination.rowsNumber = data.count
-          this.data = data.spends
+          this.data = data.expenses
           this.pagination.page = page
           this.pagination.rowsPerPage = rowsPerPage
           this.pagination.sortBy = sortBy
@@ -136,16 +136,16 @@ export default {
       this.loading = false
     },
     editSelectedRow (id) {
-      this.$router.push(`/spends/${id}`)
+      this.$router.push(`/expenses/${id}`)
     },
     deleteSelectedRow (id) {
       this.$q.dialog({
         title: 'Confirm',
-        message: 'Do you want to delete this spend?',
+        message: 'Do you want to delete this expense?',
         cancel: true,
         persistent: true
       }).onOk(() => {
-        api.delete(`/spends/${id}`).then(({ data }) => {
+        api.delete(`/expenses/${id}`).then(({ data }) => {
           this.$q.notify({
             // color: 'primary',
             // textColor,

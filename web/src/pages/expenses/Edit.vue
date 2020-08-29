@@ -3,13 +3,13 @@
     <div class="q-pa-sm panel-header">
       <div class="row">
         <div class="col-sm-9">
-          <span class="q-ml-md grey-8 fs28 page-title">Edit Spend</span>
+          <span class="q-ml-md grey-8 fs28 page-title">Edit Expense</span>
         </div>
         <div class="col-sm-3">
           <div class="q-pa-md q-gutter-sm">
             <q-breadcrumbs align="right">
               <q-breadcrumbs-el label="" icon="home" to="/" />
-              <q-breadcrumbs-el label="Spends" to="/spends" />
+              <q-breadcrumbs-el label="Expenses" to="/expenses" />
               <q-breadcrumbs-el label="Edit" />
             </q-breadcrumbs>
           </div>
@@ -22,15 +22,15 @@
         <div class="col q-pa-md">
           <div class="row q-mb-sm">
             <div class="col-sm-1 offset-11 pull-right">
-              <q-btn color="primary" flat dense icon="fas fa-arrow-alt-circle-left" @click="$router.push('/spends')" />
+              <q-btn color="primary" flat dense icon="fas fa-arrow-alt-circle-left" @click="$router.push('/expenses')" />
             </div>
           </div>
 
           <div class="row q-col-gutter-xs">
             <div class="col-sm-3">
               <q-input
-                v-model="spend.fields.amount"
-                :error="$v.spend.fields.amount.$error"
+                v-model="expense.fields.amount"
+                :error="$v.expense.fields.amount.$error"
                 label="Amount"
                 filled
                 prefix="$"
@@ -40,8 +40,8 @@
             </div>
             <div class="col-sm-3">
               <q-input
-                v-model="spend.fields.concept"
-                :error="$v.spend.fields.concept.$error"
+                v-model="expense.fields.concept"
+                :error="$v.expense.fields.concept.$error"
                 label="Concept"
                 filled
                 :rules="conceptRules"
@@ -50,19 +50,19 @@
             </div>
             <div class="col-sm-3">
               <q-select
-                v-model="spend.fields.category_id"
-                :error="$v.spend.fields.category_id.$error"
+                v-model="expense.fields.category_id"
+                :error="$v.expense.fields.category_id.$error"
                 filled
                 emit-value
                 map-options
                 label="Category"
-                :options="spend.categoriesOptions"
-                :loading="spend.categoriesLoading"
+                :options="expense.categoriesOptions"
+                :loading="expense.categoriesLoading"
               />
             </div>
             <div class="col-sm-3">
               <q-input
-                v-model="spend.fields.date"
+                v-model="expense.fields.date"
                 label="Date"
                 stack-label
                 type="date"
@@ -71,30 +71,30 @@
             </div>
             <div class="col-sm-3">
               <q-select
-                v-model="spend.fields.type_id"
+                v-model="expense.fields.type_id"
                 filled
                 emit-value
                 map-options
                 label="Type (Optional)"
-                :options="spend.typesOptions"
-                :loading="spend.typesLoading"
+                :options="expense.typesOptions"
+                :loading="expense.typesLoading"
               />
             </div>
             <div class="col-sm-3">
               <q-select
-                v-model="spend.fields.payment_method_id"
+                v-model="expense.fields.payment_method_id"
                 filled
                 emit-value
                 map-options
                 label="Payment method (Optional)"
-                :options="spend.paymentMethodsOptions"
-                :loading="spend.paymentMethodsLoading"
+                :options="expense.paymentMethodsOptions"
+                :loading="expense.paymentMethodsLoading"
               />
             </div>
             <div class="col-sm-6">
               <q-input
-                v-model="spend.fields.note"
-                :error="$v.spend.fields.note.$error"
+                v-model="expense.fields.note"
+                :error="$v.expense.fields.note.$error"
                 label="Note (Optional)"
                 filled
                 :rules="noteRules"
@@ -105,7 +105,7 @@
 
           <div class="row q-mb-sm q-mt-md">
             <div class="col-sm-1 offset-11 pull-right">
-              <q-btn color="primary" label="Save" @click="editSpend()" />
+              <q-btn color="primary" label="Save" @click="editExpense()" />
             </div>
           </div>
         </div>
@@ -119,9 +119,9 @@ import api from '../../commons/api.js'
 const { required, decimal, between, maxLength } = require('vuelidate/lib/validators')
 
 export default {
-  name: 'EditSpend',
+  name: 'EditExpense',
   validations: {
-    spend: {
+    expense: {
       fields: {
         amount: { required, decimal, between: between(0, 99999.99) },
         concept: { required, maxLength: maxLength(60) },
@@ -134,7 +134,7 @@ export default {
   },
   data () {
     return {
-      spend: {
+      expense: {
         fields: {
           amount: null,
           date: null,
@@ -157,67 +157,67 @@ export default {
   computed: {
     amountRules (val) {
       return [
-        val => (this.$v.spend.fields.amount.required) || 'Amount field is required',
-        val => (this.$v.spend.fields.amount.between) || 'Amount must be a value between 0 and 99999.99'
+        val => (this.$v.expense.fields.amount.required) || 'Amount field is required',
+        val => (this.$v.expense.fields.amount.between) || 'Amount must be a value between 0 and 99999.99'
       ]
     },
     conceptRules (val) {
       return [
-        val => (this.$v.spend.fields.concept.required) || 'Concept field is required',
-        val => (this.$v.spend.fields.concept.maxLength) || 'Concept length must be less than 60 characters'
+        val => (this.$v.expense.fields.concept.required) || 'Concept field is required',
+        val => (this.$v.expense.fields.concept.maxLength) || 'Concept length must be less than 60 characters'
       ]
     },
     noteRules (val) {
       return [
-        val => (this.$v.spend.fields.note.maxLength) || 'Description length must be less than 60 characters'
+        val => (this.$v.expense.fields.note.maxLength) || 'Description length must be less than 60 characters'
       ]
     },
     categoryIdRules (val) {
       return [
-        val => (this.$v.spend.fields.category_id.required) || 'Category field is required.'
+        val => (this.$v.expense.fields.category_id.required) || 'Category field is required.'
       ]
     }
   },
   created () {},
   mounted () {
-    this.spend.fieldsLoading = true
+    this.expense.fieldsLoading = true
     const id = this.$route.params.id
-    api.get(`/spends/${id}`).then(({ data }) => {
+    api.get(`/expenses/${id}`).then(({ data }) => {
       if (data.result) {
-        this.spend.fields = data.spend
-        this.spend.fields.date = `${data.spend.date}`
+        this.expense.fields = data.expense
+        this.expense.fields.date = `${data.expense.date}`
         this.fetchFromServer()
       } else {
         this.$showMessage(data.message.title, data.message.content)
       }
     })
-    this.spend.fieldsLoading = false
+    this.expense.fieldsLoading = false
   },
   methods: {
     async fetchFromServer () {
-      this.spend.typesLoading = true
+      this.expense.typesLoading = true
       await api.get('/types/options').then(({ data }) => {
-        this.spend.typesOptions = data.options
+        this.expense.typesOptions = data.options
       })
-      this.spend.typesLoading = false
+      this.expense.typesLoading = false
 
-      this.spend.paymentMethodsLoading = true
+      this.expense.paymentMethodsLoading = true
       await api.get('/payment-methods/options').then(({ data }) => {
-        this.spend.paymentMethodsOptions = data.options
+        this.expense.paymentMethodsOptions = data.options
       })
-      this.spend.paymentMethodsLoading = false
+      this.expense.paymentMethodsLoading = false
 
-      this.spend.categoriesLoading = true
+      this.expense.categoriesLoading = true
       await api.get('/categories/options').then(({ data }) => {
-        this.spend.categoriesOptions = data.options
+        this.expense.categoriesOptions = data.options
       })
-      this.spend.categoriesLoading = false
+      this.expense.categoriesLoading = false
     },
-    editSpend () {
-      if (this.spend.fields.id > 0) {
-        this.$v.spend.fields.$reset()
-        this.$v.spend.fields.$touch()
-        if (this.$v.spend.fields.$error) {
+    editExpense () {
+      if (this.expense.fields.id > 0) {
+        this.$v.expense.fields.$reset()
+        this.$v.expense.fields.$touch()
+        if (this.$v.expense.fields.$error) {
           this.$q.dialog({
             title: 'Warning!',
             message: 'Please check validations.',
@@ -227,12 +227,12 @@ export default {
         }
         this.$q.dialog({
           title: 'Confirm',
-          message: 'Do you want to edit the spend?',
+          message: 'Do you want to edit the expense?',
           cancel: true,
           persistent: true
         }).onOk(() => {
-          let params = { ...this.spend.fields }
-          api.put(`/spends/${params.id}`, params).then(({ data }) => {
+          let params = { ...this.expense.fields }
+          api.put(`/expenses/${params.id}`, params).then(({ data }) => {
             this.$q.notify({
               // color: 'primary',
               // textColor,
@@ -251,7 +251,7 @@ export default {
             //   persistent: true
             // })
             if (data.result) {
-              this.$router.push('/spends')
+              this.$router.push('/expenses')
             }
           })
         }).onCancel(() => {})

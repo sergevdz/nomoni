@@ -11,6 +11,7 @@ class CategoriesController extends BaseController
         $this->content['result'] = true;
         $this->content['message'] = [];
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
     
     public function getCategory ($id)
@@ -19,6 +20,7 @@ class CategoriesController extends BaseController
         $this->content['result'] = true;
         $this->content['message'] = [];
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 
     public function getOptions () {
@@ -33,7 +35,8 @@ class CategoriesController extends BaseController
         $this->content['options'] = $options;
         $this->content['result'] = true;
         $this->content['message'] = [];
-        $this->response->setJsonContent($this->content);   
+        $this->response->setJsonContent($this->content);
+        $this->response->send();   
     }
 
     public function create ()
@@ -67,6 +70,7 @@ class CategoriesController extends BaseController
         }
 
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 
     public function update ($id)
@@ -100,6 +104,7 @@ class CategoriesController extends BaseController
         }
 
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 
     public function delete ($id)
@@ -129,5 +134,6 @@ class CategoriesController extends BaseController
         }
 
         $this->response->setJsonContent($this->content);
+        $this->response->send();
     }
 }

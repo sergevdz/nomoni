@@ -60,12 +60,12 @@
             <q-item-label>Dashboard</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/spends">
+        <q-item to="/expenses">
           <q-item-section avatar>
             <q-icon name="fa fa-shopping-cart" size="1rem" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Spends</q-item-label>
+            <q-item-label>Expenses</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -109,7 +109,7 @@
 import { openURL } from 'quasar'
 
 export default {
-  name: 'MyLayout',
+  name: 'MainLayout',
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop
