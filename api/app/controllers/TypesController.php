@@ -5,37 +5,45 @@ use Phalcon\Mvc\Controller;
 class TypesController extends BaseController
 {
 
-    public function getTypes ()
+    function getTypes ()
     {   
-        $this->content['types'] = Types::find(['order' => 'ord ASC']);
-        $this->content['result'] = true;
-        $this->content['message'] = [];
-        $this->response->setJsonContent($this->content);
+        $content = $this->content;
+        $content['types'] = Types::find(['order' => 'ord ASC']);
+        $content['result'] = true;
+        $content['message'] = [];
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
     
-    public function getType ($id)
+    function getType ($id)
     {
-        $this->content['type'] = Types::findFirst($id);
-        $this->content['result'] = true;
-        $this->content['message'] = [];
-        $this->response->setJsonContent($this->content);
+        $content = $this->content;
+        $content['type'] = Types::findFirst($id);
+        $content['result'] = true;
+        $content['message'] = [];
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
 
-    public function getOptions () {
+    function getOptions () {
+        $content = $this->content;
         $sql = "
         SELECT
             id as value,
             name as label
         FROM types
         ORDER BY id ASC;";
-        $this->content['options'] = $this->db->query($sql)->fetchAll();
-        $this->content['result'] = true;
-        $this->content['message'] = [];
-        $this->response->setJsonContent($this->content);   
+        $content['options'] = $this->db->query($sql)->fetchAll();
+        $content['result'] = true;
+        $content['message'] = [];
+        $this->response->setJsonContent($content);   
+        $this->response->send();
     }
 
-    public function create ()
+    function create ()
     {
+        $content = $this->content;
+
         try {
             $tx = $this->transactions->get();
 
@@ -51,23 +59,26 @@ class TypesController extends BaseController
             }
 
             if ($type->create()) {
-                $this->content['result'] = true;
-                $this->content['message'] = Message::success('Type was created.');
+                $content['result'] = true;
+                $content['message'] = Message::success('Type was created.');
                 $tx->commit();
             } else {
-                $this->content['error'] = Helpers::getErrors($type);
-                $this->content['message'] = Message::error('There was an error when trying to create the type.');
+                $content['error'] = Helpers::getErrors($type);
+                $content['message'] = Message::error('There was an error when trying to create the type.');
                 $tx->rollback();
             }
         } catch (Exception $e) {
-            $this->content['errors'] = Message::exception($e);
+            $content['errors'] = Message::exception($e);
         }
 
-        $this->response->setJsonContent($this->content);
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
 
-    public function update ($id)
+    function update ($id)
     {
+        $content = $this->content;
+
         try {
             $tx = $this->transactions->get();
 
@@ -82,25 +93,28 @@ class TypesController extends BaseController
             	$type->ord = $request['ord'];
 
             	if ($type->update()) {
-            		$this->content['result'] = true;
-            		$this->content['message'] = Message::success('Type has changed.');
+            		$content['result'] = true;
+            		$content['message'] = Message::success('Type has changed.');
                     $tx->commit();
             	} else {
-                    $this->content['error'] = Helpers::getErrors($type);
-            		$this->content['message'] = Message::error('There was an error when trying to change the type.');
+                    $content['error'] = Helpers::getErrors($type);
+            		$content['message'] = Message::error('There was an error when trying to change the type.');
                     $tx->rollback();
             	}
             }
         } catch (Exception $e) {
-            $this->content['errors'] = Message::exception($e);
+            $content['errors'] = Message::exception($e);
         }
 
-        $this->response->setJsonContent($this->content);
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
 
-    public function delete ($id)
+    function delete ($id)
     {
-         try {
+        $content = $this->content;
+
+        try {
             $tx = $this->transactions->get();
 
             $type = Types::findFirst($id);
@@ -109,21 +123,22 @@ class TypesController extends BaseController
                 $type->setTransaction($tx);
 
                 if ($type->delete()) {
-                    $this->content['result'] = true;
-                    $this->content['message'] = Message::success('Type was deleted.');
+                    $content['result'] = true;
+                    $content['message'] = Message::success('Type was deleted.');
                     $tx->commit();
                 } else {
-                    $this->content['error'] = Helpers::getErrors($type);
-                    $this->content['message'] = Message::error('There was an error when trying to delete the type.');
+                    $content['error'] = Helpers::getErrors($type);
+                    $content['message'] = Message::error('There was an error when trying to delete the type.');
                     $tx->rollback();
                 }
             } else {
-                $this->content['message'] = Message::error('The type doesn\'t exists.');
+                $content['message'] = Message::error('The type doesn\'t exists.');
             }
         } catch (Exception $e) {
-            $this->content['errors'] = Message::exception($e);
+            $content['errors'] = Message::exception($e);
         }
 
-        $this->response->setJsonContent($this->content);
+        $this->response->setJsonContent($content);
+        $this->response->send();
     }
 }

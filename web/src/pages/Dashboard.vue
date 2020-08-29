@@ -70,7 +70,7 @@
           <q-markup-table separator="horizontal" flat bordered>
             <thead>
               <tr>
-                <th class="text-left">Year/Month</th>
+                <th class="text-left">Year-Month</th>
                 <th class="text-right">Amount</th>
               </tr>
             </thead>
