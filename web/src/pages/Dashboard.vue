@@ -228,14 +228,14 @@ export default {
     },
     async loadExpenses () {
       this.loadingDaily = true
-      await api.get('expenses/daily').then(({ data }) => {
-        this.dailyAmount = data.dailyAmount
+      await api.get('expenses/daily-amount').then(({ data }) => {
+        this.dailyAmount = data.amount
       })
       this.loadingDaily = false
 
       this.loadingMonthly = true
-      await api.get('expenses/monthly').then(({ data }) => {
-        this.monthlyAmount = data.monthlyAmount
+      await api.get('expenses/monthly-amount').then(({ data }) => {
+        this.monthlyAmount = data.amount
       })
       this.loadingMonthly = false
     },

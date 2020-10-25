@@ -199,9 +199,24 @@ class ExpensesController extends BaseController
                 $spend->type_id = $request['type_id'];
             }
 
-            if (isset($request['payment_method_id'])) {
-                $spend->payment_method_id = $request['payment_method_id'];
-            }
+            // if (isset($request['payment_method_id'])) {
+            //     $spend->payment_method_id = !empty($request['payment_method_id']) ? $request['payment_method_id'] : null;
+            // }
+
+            $spend->payment_method_id = !empty($request['payment_method_id']) ? $request['payment_method_id'] : null ?? null;
+
+            // $spend->payment_method_id = $request['payment_method_id'] ?? null;
+
+            // if (isset($request['payment_method_id'])) {
+            //     if (intval($request['payment_method_id'])) {
+            //         $spend->payment_method_id = $request['payment_method_id'];
+            //     }
+            // }
+            $content['res_____________________________'] = $request;
+            $content['res_2_2_2_2_2_2_2_2_2_2_2__________________'] = [
+                intval($request['payment_method_id']), 
+                '_'.$request['payment_method_id'].'_'
+            ];
 
             if (isset($request['note'])) {
                 $spend->note = $request['note'];
@@ -262,40 +277,41 @@ class ExpensesController extends BaseController
         $this->response->send();
     }
 
-    function getDailyExpenses() {
+    function getDailyAmount() {
+        $content = $this->content;
+        $userId = $this->loggedUserId;
         $today = date('Y-m-d');
-        $sql = "SELECT amount FROM spends where user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM-DD') = '$today';";
-        $spends = $this->db->query($sql)->fetchAll();
-        $dailyAmount = 0;
-        
-        if (count($spends) > 0) {
-            foreach ($spends as $sp) {
-                $dailyAmount += $sp['amount'];
-            }
-        }
 
-        $this->content['dailyAmount'] = $dailyAmount;
-        $this->content['result'] = true;
-        $this->response->setJsonContent($this->content);
+        $amount = Spends::sum(
+            [
+                'column'     => 'amount',
+                'conditions' => "user_id = {$userId} AND to_char(date, 'YYYY-MM-DD') = '{$today}'",
+            ]
+        );
+
+        $content['amount'] = $amount;
+        $content['result'] = true;
+        $this->response->setJsonContent($content);
         $this->response->send();
     }
 
 
-    function getMonthlyExpenses() {
+    function getMonthlyAmount()
+    {
+        $content = $this->content;
+        $userId = $this->loggedUserId;
         $today = date('Y-m');
-        $sql = "SELECT amount FROM spends where user_id = {$this->loggedUserId} AND to_char(date, 'YYYY-MM') = '$today';";
-        $spends = $this->db->query($sql)->fetchAll();
-        $dailyAmount = 0;
-        
-        if (count($spends) > 0) {
-            foreach ($spends as $sp) {
-                $dailyAmount += $sp['amount'];
-            }
-        }
 
-        $this->content['monthlyAmount'] = $dailyAmount;
-        $this->content['result'] = true;
-        $this->response->setJsonContent($this->content);
+        $amount = Spends::sum(
+            [
+                'column'     => 'amount',
+                'conditions' => "user_id = {$userId} AND to_char(date, 'YYYY-MM') = '{$today}'",
+            ]
+        );
+
+        $content['amount'] = $amount;
+        $content['result'] = true;
+        $this->response->setJsonContent($content);
         $this->response->send();
     }
 
