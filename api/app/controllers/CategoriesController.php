@@ -30,7 +30,7 @@ class CategoriesController extends BaseController
             name as label
         FROM categories
         WHERE user_id = {$this->loggedUserId}
-        ORDER BY id ASC;";
+        ORDER BY name ASC;";
         $options = $this->db->query($sql)->fetchAll();
         $this->content['options'] = $options;
         $this->content['result'] = true;

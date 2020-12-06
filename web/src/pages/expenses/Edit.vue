@@ -225,36 +225,24 @@ export default {
           })
           return false
         }
-        this.$q.dialog({
-          title: 'Confirm',
-          message: 'Do you want to edit the expense?',
-          cancel: true,
-          persistent: true
-        }).onOk(() => {
-          let params = { ...this.expense.fields }
-          api.put(`/expenses/${params.id}`, params).then(({ data }) => {
-            this.$q.notify({
-              // color: 'primary',
-              // textColor,
-              icon: 'far fa-check-circle',
-              message: data.message.title + ' ' + data.message.content,
-              // caption: data.message.content,
-              position: 'top-right',
-              // avatar,
-              multiLine: true,
-              actions: [ { label: 'Dismiss', color: 'positive', handler: () => {} } ],
-              timeout: 2500
-            })
-            // this.$q.dialog({
-            //   title: data.message.title,
-            //   message: data.message.content,
-            //   persistent: true
-            // })
-            if (data.result) {
-              this.$router.push('/expenses')
-            }
+        let params = { ...this.expense.fields }
+        api.put(`/expenses/${params.id}`, params).then(({ data }) => {
+          this.$q.notify({
+            // color: 'primary',
+            // textColor,
+            icon: 'far fa-check-circle',
+            message: data.message.title + ' ' + data.message.content,
+            // caption: data.message.content,
+            position: 'top-right',
+            // avatar,
+            multiLine: true,
+            actions: [ { label: 'Dismiss', color: 'positive', handler: () => {} } ],
+            timeout: 2500
           })
-        }).onCancel(() => {})
+          if (data.result) {
+            this.$router.push('/expenses')
+          }
+        })        
       }
     }
   }

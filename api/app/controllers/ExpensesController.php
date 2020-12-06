@@ -7,14 +7,23 @@ class ExpensesController extends BaseController
     function getAll()
     {   
         $content = $this->content;
-        $content['expenses'] = Spends::find(
-            [
-                "user_id = {$this->loggedUserId}",
-                'order' => 'date DESC', 
-                'limit' => '20000'
-            ]
-        );
+        $sql = "
+        SELECT
+            spends.*
+        FROM spends
+        WHERE user_id = {$this->loggedUserId}
+        ORDER BY date DESC
+        LIMIT 2000;";
+        // $content['expenses'] = Spends::find(
+        //     [
+        //         "user_id = {$this->loggedUserId}",
+        //         'order' => 'date DESC', 
+        //         'limit' => '20000'
+        //     ]
+        // );
+        $content['expenses'] = $this->db->query($sql)->fetchAll();
         $content['result'] = true;
+
         $this->response->setJsonContent($content);
         $this->response->send();
     }
@@ -89,7 +98,7 @@ class ExpensesController extends BaseController
         LEFT JOIN types ON types.id = spends.type_id
         LEFT JOIN payment_methods ON payment_methods.id = spends.payment_method_id
         JOIN categories ON categories.id = spends.category_id
-        WHERE spends.user_id = {$this->loggedUserId} AND spends.id > 0 {$where}
+        WHERE spends.id > 0 AND spends.user_id = {$this->loggedUserId} {$where}
         ORDER BY spends.{$sortBy} {$descending} limit {$rowsPerPage} offset {$offset};";
 
         $spends = $this->db->query($sql)->fetchAll();
