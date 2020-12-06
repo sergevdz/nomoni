@@ -5,7 +5,7 @@ use Phalcon\Mvc\Controller;
 class CategoriesController extends BaseController
 {
 
-    public function getCategories ()
+    function getCategories ()
     {   
         $this->content['categories'] = Categories::find(["user_id = {$this->loggedUserId}", 'order' => 'ord ASC']);
         $this->content['result'] = true;
@@ -14,7 +14,7 @@ class CategoriesController extends BaseController
         $this->response->send();
     }
     
-    public function getCategory ($id)
+    function getCategory ($id)
     {
         $this->content['category'] = Categories::findFirst("user_id = {$this->loggedUserId} AND id = {$id}");
         $this->content['result'] = true;
@@ -23,7 +23,7 @@ class CategoriesController extends BaseController
         $this->response->send();
     }
 
-    public function getOptions () {
+    function getOptions () {
         $sql = "
         SELECT
             id as value,
@@ -39,7 +39,7 @@ class CategoriesController extends BaseController
         $this->response->send();   
     }
 
-    public function create ()
+    function create ()
     {
         try {
             $tx = $this->transactions->get();
@@ -73,7 +73,7 @@ class CategoriesController extends BaseController
         $this->response->send();
     }
 
-    public function update ($id)
+    function update ($id)
     {
         try {
             $tx = $this->transactions->get();
@@ -107,7 +107,7 @@ class CategoriesController extends BaseController
         $this->response->send();
     }
 
-    public function delete ($id)
+    function delete ($id)
     {
          try {
             $tx = $this->transactions->get();

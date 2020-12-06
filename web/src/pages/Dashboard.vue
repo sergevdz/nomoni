@@ -75,9 +75,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="month in lastFiveMonths" :key="month.label">
-                <td>{{ month.label }}</td>
-                <td>{{ month.value }}</td>
+              <tr v-for="month in lastFiveMonths" :key="month.date">
+                <td>{{ month.date }}</td>
+                <td>$ {{ $formatNumber(month.amount) }}</td>
               </tr>
             </tbody>
           </q-markup-table>
@@ -222,7 +222,7 @@ export default {
     async loadAll () {
       await this.loadExpenses()
       await this.loadTables()
-      await api.get('expenses/get-last-five-months').then(({ data }) => {
+      await api.get('expenses/divided-by-months').then(({ data }) => {
         this.lastFiveMonths = data.months
       })
     },
@@ -245,17 +245,17 @@ export default {
       await this.getGroupedByPaymentMethod()
     },
     async getGroupedByCategory () {
-      await api.get('expenses/get-grouped-by-category').then(({ data }) => {
+      await api.get('expenses/by-categories').then(({ data }) => {
         this.groupedByCategory = data.expenses
       })
     },
     async getGroupedByType () {
-      await api.get('expenses/get-grouped-by-type').then(({ data }) => {
+      await api.get('expenses/by-types').then(({ data }) => {
         this.groupedByType = data.expenses
       })
     },
     async getGroupedByPaymentMethod () {
-      await api.get('expenses/get-grouped-by-payment-method').then(({ data }) => {
+      await api.get('expenses/by-payment-methods').then(({ data }) => {
         this.groupedByPaymentMethod = data.expenses
       })
     }

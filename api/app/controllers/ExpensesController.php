@@ -102,19 +102,33 @@ class ExpensesController extends BaseController
         $this->response->send();
     }
 
-    function getLastFiveMonths() {
+    function getDividedByMonths() {
+        $content = $this->content;
+        $userId = $this->loggedUserId;
+        $qs = $this->request->getQuery();
+        $pastMonths = $qs['pastMonths'] ?? 5;
+
         $months = [];
         $currentDate = date('Y-m');
 
-        for ($i = 1; $i <= 5; $i++) {
-            $spends = $this->db->query(
-                "SELECT sum(amount) as amount FROM spends where user_id = $this->loggedUserId AND to_char(date, 'YYYY-MM') = '$currentDate';"
-            )->fetchAll();
-            $months[] = ['label' => $currentDate, 'value' => floatval($spends[0]['amount'])];
-            $currentDate = date("Y-m", strtotime("-1 month", strtotime($currentDate)));
+        for ($i = 1; $i <= $pastMonths; $i++) {
+
+            $amount = Spends::sum(
+                [
+                    'column'     => 'amount',
+                    'conditions' => "user_id = {$userId} AND to_char(date, 'YYYY-MM') = '{$currentDate}'",
+                ]
+            );
+            $months[] = [
+                'date' => date('F', strtotime($currentDate)),
+                'amount' => floatval($amount)
+            ];
+            $currentDate = date('Y-m', strtotime('-1 month', strtotime($currentDate)));
         }
-        $this->content['months'] = $months;
-        $this->response->setJsonContent($this->content);
+        $content['months'] = $months;
+        $content['result'] = true;
+
+        $this->response->setJsonContent($content);
         $this->response->send();
     }
 
@@ -289,7 +303,7 @@ class ExpensesController extends BaseController
             ]
         );
 
-        $content['amount'] = $amount;
+        $content['amount'] = floatval($amount);
         $content['result'] = true;
         $this->response->setJsonContent($content);
         $this->response->send();
@@ -309,7 +323,7 @@ class ExpensesController extends BaseController
             ]
         );
 
-        $content['amount'] = $amount;
+        $content['amount'] = floatval($amount);
         $content['result'] = true;
         $this->response->setJsonContent($content);
         $this->response->send();
@@ -318,10 +332,12 @@ class ExpensesController extends BaseController
     /**
      * A list with de spends of the current month grouped by category
      */
-    function getSpendGroupedByCategory()
+    function getByCategories()
     {
+        $content = $this->content;
         $today = date('Y-m');
-        $sql = "        
+        
+        $sql = "
         SELECT
             sum(amount) AS amount,
             categories.name,
@@ -332,16 +348,19 @@ class ExpensesController extends BaseController
         GROUP BY spends.category_id, categories.name, categories.ord
         ORDER BY categories.ord;";
         $spends = $this->db->query($sql)->fetchAll();
-        $this->content['expenses'] = $spends;
-        $this->response->setJsonContent($this->content);
+        $content['expenses'] = $spends;
+        $content['result'] = true;
+
+        $this->response->setJsonContent($content);
         $this->response->send();
     }
 
     /**
      * A list with de spends of the current month grouped by type
      */
-    function getSpendGroupedByType()
+    function getByTypes()
     {
+        $content = $this->content;
         $today = date('Y-m');
         $sql = "        
         SELECT
@@ -354,16 +373,19 @@ class ExpensesController extends BaseController
         GROUP BY spends.type_id, types.name, types.ord
         ORDER BY types.ord;";
         $spends = $this->db->query($sql)->fetchAll();
-        $this->content['expenses'] = $spends;
-        $this->response->setJsonContent($this->content);
+        $content['expenses'] = $spends;
+        $content['result'] = true;
+
+        $this->response->setJsonContent($content);
         $this->response->send();
     }
 
     /**
      * A list with de spends of the current month grouped by payment method
      */
-    function getSpendGroupedByPaymentMethod()
+    function getByPaymentMethods()
     {
+        $content = $this->content;
         $today = date('Y-m');
         $sql = "        
         SELECT
@@ -376,8 +398,10 @@ class ExpensesController extends BaseController
         GROUP BY spends.payment_method_id, payment_methods.name, payment_methods.ord
         ORDER BY payment_methods.ord;";
         $spends = $this->db->query($sql)->fetchAll();
-        $this->content['expenses'] = $spends;
-        $this->response->setJsonContent($this->content);
+        $content['expenses'] = $spends;
+        $content['result'] = true;
+        
+        $this->response->setJsonContent($content);
         $this->response->send();  
     }
 }
