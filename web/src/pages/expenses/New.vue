@@ -61,13 +61,19 @@
               />
             </div>
             <div class="col-sm-3">
-              <q-input
-                v-model="expense.fields.date"
-                label="Date (Optional)"
-                stack-label
-                type="date"
-                filled
-              />
+              <q-input filled v-model="expense.fields.date" mask="date" :rules="['date']">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="expense.fields.date" @input="closeDialog">
+                        <div class="row items-center justify-end">
+                          <!-- <q-btn v-close-popup label="Close" color="primary" flat @input="closeDialog" /> -->
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
             </div>
             <div class="col-sm-3">
               <q-select
@@ -116,10 +122,12 @@
 
 <script>
 import api from '../../commons/api.js'
+import mix from '../../commons/mix.js'
 const { required, decimal, between, maxLength } = require('vuelidate/lib/validators')
 
 export default {
   name: 'NewExpense',
+  mixins: [ mix ],
   validations: {
     expense: {
       fields: {
@@ -139,7 +147,7 @@ export default {
           concept: null,
           note: null,
           type_id: 1,
-          payment_method_id: null,
+          payment_method_id: 3,
           category_id: null
         },
         typesOptions: [],
