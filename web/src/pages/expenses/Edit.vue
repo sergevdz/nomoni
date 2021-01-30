@@ -122,10 +122,12 @@
 
 <script>
 import api from '../../commons/api.js'
+import mix from '../../commons/mix.js'
 const { required, decimal, between, maxLength } = require('vuelidate/lib/validators')
 
 export default {
   name: 'EditExpense',
+  mixins: [ mix ],
   validations: {
     expense: {
       fields: {
