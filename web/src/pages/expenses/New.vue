@@ -110,7 +110,9 @@
           </div>
 
           <div class="row q-mb-sm q-mt-md">
-            <div class="col-sm-1 offset-11 pull-right">
+            <div class="col-sm-4 offset-8 pull-right">
+              <q-btn color="orange" label="Save & Continue" @click="createExpenseNContinue()" />
+              &nbsp;
               <q-btn color="primary" label="Save" @click="createExpense()" />
             </div>
           </div>
@@ -143,7 +145,7 @@ export default {
       expense: {
         fields: {
           amount: null,
-          date: null,
+          date: this.$today(),
           concept: null,
           note: null,
           type_id: 1,
@@ -239,6 +241,45 @@ export default {
         // })
         if (data.result) {
           this.$router.push('/expenses')
+        }
+      })
+    },
+    createExpenseNContinue () {
+      this.$v.expense.fields.$reset()
+      this.$v.expense.fields.$touch()
+      if (this.$v.expense.fields.$error) {
+        this.$showMessage('Warning!', 'Please check validations.')
+        // this.$q.dialog({
+        //   title: 'Warning!',
+        //   message: 'Please check validations.',
+        //   persistent: true
+        // })
+        return false
+      }
+      let params = { ...this.expense.fields }
+      api.post('/expenses', params).then(({ data }) => {
+        this.$q.notify({
+          // color: 'primary',
+          // textColor,
+          icon: 'far fa-check-circle',
+          message: data.message.title + ' ' + data.message.content,
+          // caption: data.message.content,
+          position: 'top-right',
+          // avatar,
+          multiLine: true,
+          actions: [ { label: 'Dismiss', color: 'positive', handler: () => {} } ],
+          timeout: 2500
+        })
+        // this.$q.dialog({
+        //   title: data.message.title,
+        //   message: data.message.content,
+        //   persistent: true
+        // })
+        if (data.result) {
+          this.expense.fields.amount = null
+          this.expense.fields.concept = null
+          this.expense.fields.note = null
+          // this.$router.push('/expenses')
         }
       })
     }
